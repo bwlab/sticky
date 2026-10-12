@@ -171,6 +171,13 @@
                 <property name="tooltip-text" translatable="yes">More Formatting</property>
               </object>
             </child>
+            <child>
+              <object class="GtkMenuButton" id="color_button">
+                <property name="icon-name">preferences-color-symbolic</property>
+                <property name="focus-on-click">false</property>
+                <property name="tooltip-text" translatable="yes">Note Color</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

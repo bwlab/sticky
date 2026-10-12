@@ -46,6 +46,7 @@ export class Window extends Adw.ApplicationWindow {
   declare _italic_button: Gtk.ToggleButton;
   declare _strikethrough_button: Gtk.ToggleButton;
   declare _format_button: Gtk.MenuButton;
+  declare _color_button: Gtk.MenuButton;
   declare _action_button: Gtk.ToggleButton;
   declare _action_revealer: Gtk.Revealer;
 
@@ -74,6 +75,7 @@ export class Window extends Adw.ApplicationWindow {
           "italic_button",
           "strikethrough_button",
           "format_button",
+          "color_button",
           "menu_button",
           "action_revealer",
           "action_button",
@@ -191,14 +193,22 @@ export class Window extends Adw.ApplicationWindow {
     this.add_actions();
     this.apply_font_size();
 
+    // the colors are offered in the main menu and in the formatting bar, and
+    // the two selectors follow each other
     this.selector = new StyleSelector({ style: note.style });
-    this.selector.connect("style-changed", (_selector, style) => {
-      this.set_style(style);
-      this.note.style = style;
-    });
+    const bar_selector = new StyleSelector({ style: note.style });
+    for (const [selector, other] of [[this.selector, bar_selector], [bar_selector, this.selector]]) {
+      selector.connect("style-changed", (_selector, style) => {
+        other.style = style;
+        this.set_style(style);
+        this.note.style = style;
+      });
+    }
 
     const popover = this._menu_button.get_popover() as Gtk.PopoverMenu;
     popover.add_child(this.selector, "notestyleswitcher");
+
+    this._color_button.popover = new Gtk.Popover({ child: bar_selector });
   }
 
   queue_cursor_scroll() {

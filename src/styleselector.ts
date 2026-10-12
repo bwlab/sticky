@@ -80,6 +80,7 @@ export class StyleSelector extends Gtk.Box {
   });
 
   private _style: Style;
+  private buttons: StyleButton[] = [];
 
   get style() {
     return this._style;
@@ -91,6 +92,8 @@ export class StyleSelector extends Gtk.Box {
     }
 
     this._style = style;
+    // the selector may be changed from outside, e.g. by its twin in the toolbar
+    for (const button of this.buttons) button.active = button.style === style;
     this.notify("style");
     this.emit("style-changed", style);
   }
@@ -122,6 +125,7 @@ export class StyleSelector extends Gtk.Box {
 
     styles.forEach((style, i) => {
       const button = new StyleButton(style, group);
+      this.buttons.push(button);
       button.active = style === this.style;
       button.connect("toggled", () => {
         if (button.active) {
