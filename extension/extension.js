@@ -9,6 +9,7 @@ const ACTION = "keep-above";
 
 export default class StickyNotesExtras extends Extension {
   enable() {
+    console.log("[sticky-notes-extras] enabled");
     this._tracked = new Map();
     this._created = global.display.connect(
       "window-created",
@@ -27,14 +28,15 @@ export default class StickyNotesExtras extends Extension {
 
   _track(window) {
     if (this._tracked.has(window)) return;
-    if (!APP_IDS.includes(window.get_gtk_application_id())) return;
 
     const entry = { ids: [], group: null, groupIds: [], raised: false };
     this._tracked.set(window, entry);
 
-    // the GTK properties may arrive after the window is created
-    const connect_group = () => {
+    // the GTK properties are only filled in after the window is created, so
+    // every window is watched until it turns out to be one of ours
+    const attach = () => {
       if (entry.group) return;
+      if (!APP_IDS.includes(window.get_gtk_application_id())) return;
 
       const bus_name = window.get_gtk_unique_bus_name();
       const path = window.get_gtk_window_object_path();
@@ -50,11 +52,17 @@ export default class StickyNotesExtras extends Extension {
       sync();
     };
 
-    for (const prop of ["gtk-unique-bus-name", "gtk-window-object-path"]) {
-      entry.ids.push(window.connect(`notify::${prop}`, connect_group));
+    for (
+      const prop of [
+        "gtk-application-id",
+        "gtk-unique-bus-name",
+        "gtk-window-object-path",
+      ]
+    ) {
+      entry.ids.push(window.connect(`notify::${prop}`, attach));
     }
     entry.ids.push(window.connect("unmanaged", () => this._untrack(window)));
-    connect_group();
+    attach();
   }
 
   _sync(window, entry) {
