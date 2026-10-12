@@ -83,14 +83,7 @@ export class Application extends Adw.Application {
       const notes = load_notes();
 
       notes.forEach((note) => {
-        note.connect("notify::modified", (_, x) => {
-          save_note(note);
-        });
-
-        // changing open doesn't change modified
-        note.connect("notify::open", () => {
-          save_note(note);
-        });
+        this.save_on_change(note);
 
         this.notes_list.append(note);
       });
@@ -510,17 +503,17 @@ export class Application extends Adw.Application {
     this.window.present();
   }
 
+  // open and keep-above changes don't change modified, but must be saved too
+  save_on_change(note: Note) {
+    for (const prop of ["modified", "open", "keep-above", "x", "y"]) {
+      note.connect(`notify::${prop}`, () => save_note(note));
+    }
+  }
+
   new_note() {
     const note = Note.generate();
 
-    note.connect("notify::modified", () => {
-      save_note(note);
-    });
-
-    // changing open doesn't change modified
-    note.connect("notify::open", () => {
-      save_note(note);
-    });
+    this.save_on_change(note);
 
     this.notes_list.append(note);
 
@@ -636,8 +629,7 @@ export class Application extends Adw.Application {
         if (!this.find_note(noteData.uuid)) {
           noteData.images = import_images(noteData.images);
           const note = new Note(noteData);
-          note.connect("notify::modified", () => save_note(note));
-          note.connect("notify::open", () => save_note(note));
+          this.save_on_change(note);
           this.notes_list.append(note);
           save_note(note);
         }

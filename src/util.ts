@@ -72,7 +72,15 @@ export interface INote {
   height: number;
   open: boolean;
   images?: NoteImage[];
+
+  keep_above?: boolean;
+  // where the window was last seen, reported by the GNOME Shell extension
+  x?: number;
+  y?: number;
 }
+
+/** x and y of a note whose window position was never saved */
+export const NO_POSITION = -2147483648;
 
 export enum Style {
   "yellow" = 1,
@@ -218,6 +226,10 @@ export class Note extends GObject.Object {
   // not a GObject property: kept up to date by the view that shows the note
   images: NoteImage[];
 
+  keep_above: boolean;
+  x: number;
+  y: number;
+
   get tags() {
     const items = [];
 
@@ -279,6 +291,10 @@ export class Note extends GObject.Object {
     this.open = note.open ?? false;
     this.images = note.images ?? [];
 
+    this.keep_above = note.keep_above ?? false;
+    this.x = note.x ?? NO_POSITION;
+    this.y = note.y ?? NO_POSITION;
+
     const update_display_title = () => {
       const display_title = this.title || derive_title(this.content);
       if (display_title === this.display_title) return;
@@ -302,6 +318,7 @@ export class Note extends GObject.Object {
       width: 300,
       height: 300,
       open: false,
+      keep_above: false,
     });
   }
 
@@ -323,6 +340,10 @@ export class Note extends GObject.Object {
       height: this.height,
       open: this.open,
       images: this.images.map((image) => ({ ...image })),
+
+      keep_above: this.keep_above,
+      x: this.x === NO_POSITION ? undefined : this.x,
+      y: this.y === NO_POSITION ? undefined : this.y,
     });
   }
 
@@ -341,6 +362,10 @@ export class Note extends GObject.Object {
       open: this.open,
       // left out when empty, so notes without images keep their old format
       images: this.images.length ? this.images : undefined,
+
+      keep_above: this.keep_above,
+      x: this.x === NO_POSITION ? undefined : this.x,
+      y: this.y === NO_POSITION ? undefined : this.y,
     };
   }
 
@@ -372,6 +397,12 @@ export class Note extends GObject.Object {
         height: GObject.ParamSpec.int("height", "Height", "Height of the note", GObject.ParamFlags.READWRITE, 0, 100, 0),
         // deno-fmt-ignore
         open: GObject.ParamSpec.boolean("open", "Open", "Whether the note was open when the application was closed", GObject.ParamFlags.READWRITE, false),
+        // deno-fmt-ignore
+        keep_above: GObject.ParamSpec.boolean("keep-above", "Keep Above", "Whether the note stays above other windows", GObject.ParamFlags.READWRITE, false),
+        // deno-fmt-ignore
+        x: GObject.ParamSpec.int("x", "X", "Horizontal position of the note window", GObject.ParamFlags.READWRITE, NO_POSITION, 2147483647, NO_POSITION),
+        // deno-fmt-ignore
+        y: GObject.ParamSpec.int("y", "Y", "Vertical position of the note window", GObject.ParamFlags.READWRITE, NO_POSITION, 2147483647, NO_POSITION),
       },
     }, this);
   }
