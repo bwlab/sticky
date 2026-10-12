@@ -335,9 +335,12 @@ export class Window extends Adw.ApplicationWindow {
     }
 
     const size = this.view.get_text_size();
-    const size_action = this.lookup_action("text-size") as Gio.SimpleAction;
+    const size_action = this.lookup_action("text-size") as
+      | Gio.SimpleAction
+      | null;
 
-    if (size_action.get_state()?.deepUnpack<string>() !== size) {
+    // selection-changed can fire while the buffer is assigned, before add_actions()
+    if (size_action && size_action.get_state()?.deepUnpack<string>() !== size) {
       size_action.set_state(GLib.Variant.new_string(size));
     }
   }
