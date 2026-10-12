@@ -65,7 +65,9 @@ export class Application extends Adw.Application {
 
   constructor() {
     super({
-      application_id: "com.vixalien.sticky",
+      // set by the launcher, so that a development build can run next to the stable one
+      application_id: (globalThis as { STICKY_APP_ID?: string }).STICKY_APP_ID ??
+        "com.vixalien.sticky",
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
 

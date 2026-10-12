@@ -3,6 +3,8 @@
 import GLib from "gi://GLib";
 import { exit } from "system";
 
+globalThis.STICKY_APP_ID = "@app_id@";
+
 imports.package.init({
   name: "@PACKAGE_NAME@",
   version: "@PACKAGE_VERSION@",

@@ -42,6 +42,7 @@ src_res = gnome.compile_resources(
 
 bin_conf = configuration_data()
 bin_conf.set('GJS', gjs_console)
+bin_conf.set('app_id', get_option('profile') == 'development' ? application_id + '.Devel' : application_id)
 bin_conf.set('PACKAGE_VERSION', meson.project_version())
 bin_conf.set('PACKAGE_NAME', meson.project_name())
 bin_conf.set('prefix', get_option('prefix'))
