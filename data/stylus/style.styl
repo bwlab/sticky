@@ -26,7 +26,37 @@ for color, variables in colors {
   }
 }
 
+// a note is a paper slip: square corners, a thin header and a faint shading
+// towards the bottom-right corner
+window.sticky-note, window.sticky-note.csd {
+  border-radius: 2px;
+}
+
 toolbarview.note-window {
+  border-radius: 2px;
+
+  .top-bar headerbar {
+    min-height: 30px;
+
+    > windowhandle > box {
+      min-height: 30px;
+    }
+
+    button {
+      min-height: 22px;
+      min-width: 22px;
+      padding: 0 4px;
+    }
+  }
+
+  .text-view {
+    background-image: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(0, 0, 0, 0.06) 100%
+    );
+  }
+
   .text-view, .bottom-bar, popover > arrow, popover > contents, .top-bar {
     transition: background-color 0.35s, unquote("color") 0.25s;
   }
