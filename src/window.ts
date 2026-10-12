@@ -283,6 +283,10 @@ export class Window extends Adw.ApplicationWindow {
       const link = find(text)[0];
       if (link) {
         this._action_button.action_target = GLib.Variant.new_string(link.href);
+        // an address opens the mail client, not the browser: say so
+        this._action_button.label = link.type === "email"
+          ? _("Open in Mail")
+          : _("Open Link");
       } else {
         selected = false;
       }
