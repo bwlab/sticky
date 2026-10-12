@@ -30,7 +30,7 @@ import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 
 import { StyleSelector } from "./styleselector.js";
-import { confirm_delete, Note, Style } from "./util.js";
+import { confirm_delete, NO_POSITION, Note, Style } from "./util.js";
 import { TextSize, WriteableStickyNote } from "./view.js";
 import { find } from "linkifyjs";
 import { Application } from "./application.js";
@@ -345,6 +345,15 @@ export class Window extends Adw.ApplicationWindow {
     }
   }
 
+  position_variant() {
+    const has = this.note.x !== NO_POSITION && this.note.y !== NO_POSITION;
+    return GLib.Variant.new_tuple([
+      GLib.Variant.new_boolean(has),
+      GLib.Variant.new_int32(has ? this.note.x : 0),
+      GLib.Variant.new_int32(has ? this.note.y : 0),
+    ]);
+  }
+
   add_actions() {
     const delete_ = Gio.SimpleAction.new("delete", null);
     delete_.connect("activate", () => this.delete());
@@ -364,6 +373,27 @@ export class Window extends Adw.ApplicationWindow {
       keep_above.set_state(value);
     });
     this.add_action(keep_above);
+
+    // (has position, x, y): the extension restores it when the window opens and
+    // reports it again whenever the window is moved
+    const position = Gio.SimpleAction.new_stateful(
+      "position",
+      GLib.VariantType.new("(bii)"),
+      this.position_variant(),
+    );
+    position.connect("change-state", (_, value) => {
+      if (!value) return;
+
+      const [has, x, y] = value.deepUnpack<[boolean, number, number]>();
+      if (!has) return;
+
+      this.note.freeze_notify();
+      this.note.x = x;
+      this.note.y = y;
+      this.note.thaw_notify();
+      position.set_state(value);
+    });
+    this.add_action(position);
 
     this.add_action(
       Gio.SimpleAction.new_stateful(

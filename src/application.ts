@@ -504,7 +504,7 @@ export class Application extends Adw.Application {
 
   // open and keep-above changes don't change modified, but must be saved too
   save_on_change(note: Note) {
-    for (const prop of ["modified", "open", "keep-above"]) {
+    for (const prop of ["modified", "open", "keep-above", "x", "y"]) {
       note.connect(`notify::${prop}`, () => save_note(note));
     }
   }
