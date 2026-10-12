@@ -197,15 +197,8 @@ export class Application extends Adw.Application {
       });
 
       if (!has_one_open) {
-        const last_open_note = this.notes_array()
-          .sort(compare_notes_newest_first)[0];
-
-        if (has_one_open) {
-          this.show_note(last_open_note.uuid);
-        } else {
-          settings.set_boolean("show-all-notes", true);
-          this.all_notes();
-        }
+        settings.set_boolean("show-all-notes", true);
+        this.all_notes();
       }
     }
   }

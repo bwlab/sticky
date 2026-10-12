@@ -82,9 +82,17 @@ export class StickyNotes extends Adw.ApplicationWindow {
     return this._search_entry.text.toLowerCase();
   }
 
+  // handlers connected to a note while its card is bound, so unbind can drop them
+  private bindings = new Map<StickyNoteCard, () => void>();
+
   setup_cb(_factory: Gtk.ListItemFactory, list_item: Gtk.ListItem) {
     const card = new StickyNoteCard(this);
 
+    card.connect("deleted", () => {
+      if (card.uuid) this.emit("deleted", card.uuid);
+    });
+
+    this.cards.push(card);
     list_item.set_child(card);
   }
 
@@ -93,30 +101,32 @@ export class StickyNotes extends Adw.ApplicationWindow {
     const note = list_item.get_item() as Note;
 
     card.show_visible_image = note.open;
-    card.connect("deleted", (_) => this.emit("deleted", note.uuid));
-
     card.note = note;
 
-    note.connect("notify::modified", () => {
-      card.update_modified_label();
-      this.sorter.changed(Gtk.SorterChange.DIFFERENT);
-    });
+    const ids = [
+      note.connect("notify::modified", () => {
+        card.update_modified_label();
+        this.sorter.changed(Gtk.SorterChange.DIFFERENT);
+      }),
+      note.connect("notify::title", () => {
+        card.update_title_label();
+      }),
+      note.connect("notify::open", () => {
+        card.show_visible_image = note.open;
+      }),
+      note.connect("notify::style", () => {
+        card.set_style(note.style);
+      }),
+    ];
 
-    note.connect("notify::title", () => {
-      card.update_title_label();
-    });
-
-    note.connect("notify::open", (_) => {
-      card.show_visible_image = note.open;
-    });
-
-    note.connect("notify::style", () => {
-      card.set_style(note.style);
-    });
+    this.bindings.set(card, () => ids.forEach((id) => note.disconnect(id)));
   }
 
-  unbind_cb(_factory: Gtk.ListItemFactory, _list_item: Gtk.ListItem) {
-    const card = new StickyNoteCard(this);
+  unbind_cb(_factory: Gtk.ListItemFactory, list_item: Gtk.ListItem) {
+    const card = list_item.get_child() as StickyNoteCard;
+
+    this.bindings.get(card)?.();
+    this.bindings.delete(card);
 
     card.view.remove_listeners();
   }
@@ -220,7 +230,7 @@ export class StickyNotes extends Adw.ApplicationWindow {
   }
 
   set_note_visible(uuid: string, visible: boolean) {
-    const card = this.cards.find((card) => card.note.uuid === uuid);
+    const card = this.cards.find((card) => card.uuid === uuid);
 
     if (!card) return;
 
