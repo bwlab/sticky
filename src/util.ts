@@ -83,6 +83,18 @@ export enum Style {
   "gray",
   "charcoal",
   "window",
+  "orange",
+  "peach",
+  "coral",
+  "red",
+  "rose",
+  "lavender",
+  "indigo",
+  "cyan",
+  "aqua",
+  "mint",
+  "lime",
+  "sand",
 }
 
 export const StyleNames = new Map([
@@ -94,6 +106,18 @@ export const StyleNames = new Map([
   [Style.gray, _("Gray")],
   [Style.charcoal, _("Charcoal")],
   [Style.window, _("Window")],
+  [Style.orange, _("Orange")],
+  [Style.peach, _("Peach")],
+  [Style.coral, _("Coral")],
+  [Style.red, _("Red")],
+  [Style.rose, _("Rose")],
+  [Style.lavender, _("Lavender")],
+  [Style.indigo, _("Indigo")],
+  [Style.cyan, _("Cyan")],
+  [Style.aqua, _("Aqua")],
+  [Style.mint, _("Mint")],
+  [Style.lime, _("Lime")],
+  [Style.sand, _("Sand")],
 ]);
 
 export const styles = Object.values(Style).filter(
