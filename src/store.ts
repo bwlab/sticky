@@ -174,10 +174,20 @@ export function load_notes() {
 
   const files = list_files(NewNotesDir);
 
-  return files
-    .filter((file) => file.get_basename()!.endsWith(".json"))
-    .map((file) => load_file(file))
-    .map((note) => new Note(note));
+  // a file that can't be read must never take the other notes down with it
+  const notes: Note[] = [];
+
+  for (const file of files) {
+    if (!file.get_basename()!.endsWith(".json")) continue;
+
+    try {
+      notes.push(new Note(load_file(file)));
+    } catch (e) {
+      console.error(`Skipping unreadable note ${file.get_path()}: ${e}`);
+    }
+  }
+
+  return notes;
 }
 
 export const list_files = (dir: Gio.File) => {
@@ -199,48 +209,12 @@ export const list_files = (dir: Gio.File) => {
   return files;
 };
 
+// Only ever writes. Files are removed solely by delete_note(), so that a
+// failed load or a stray file can never cause notes to be erased from disk.
 export function save_notes(notes: Note[]) {
   ensure_dir(NewNotesDir);
 
-  const files = list_files(NewNotesDir);
-
-  let writes: [Note, Gio.File][] = [];
-  const deletes: Gio.File[] = [];
-
-  for (const file of files) {
-    const basename = file.get_basename()!;
-
-    if (basename.endsWith(".json")) {
-      const uuid = basename.slice(0, -5);
-
-      if (uuid.length !== 36) {
-        deletes.push(file);
-        continue;
-      }
-
-      const note = notes.find((note) => note.uuid === uuid);
-      if (note) {
-        writes.push([note, file]);
-      } else {
-        deletes.push(file);
-      }
-    } else {
-      // deletes.push(file);
-    }
-  }
-
-  for (const note of notes) {
-    if (!writes.some(([n]) => n.uuid === note.uuid)) {
-      const file = NewNotesDir.get_child(`${note.uuid}.json`);
-      writes.push([note, file]);
-    }
-  }
-
-  for (const file of deletes) {
-    file.delete(null);
-  }
-
-  return writes.map(([note, file]) => save_file(file, note));
+  return notes.map((note) => save_note(note));
 }
 
 export function save_note(note: Note) {
