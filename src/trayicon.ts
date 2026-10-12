@@ -436,6 +436,7 @@ export class TrayIcon {
       // "style" changes the swatch color
       note.connect("notify::modified", () => this.invalidate_menu());
       note.connect("notify::style", () => this.invalidate_menu());
+      note.connect("notify::display-title", () => this.invalidate_menu());
     });
   }
 
@@ -525,7 +526,8 @@ export class TrayIcon {
 
     for (const note of notes) {
       const uuid = note.uuid;
-      const title = note.title.trim();
+      // display_title is the note's own title, or one derived from its content
+      const title = note.display_title.trim();
 
       items.push({
         id: this.note_id(uuid),
