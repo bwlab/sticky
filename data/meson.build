@@ -81,7 +81,7 @@ pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
 subdir('stylus')
 
 data_res = gnome.compile_resources(
-  'com.vixalien.sticky.data',
+  application_id + '.data',
   'com.vixalien.sticky.data.gresource.xml',
   dependencies: stylus,
   gresource_bundle: true,

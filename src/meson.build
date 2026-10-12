@@ -34,7 +34,7 @@ typescript = custom_target(
 )
 
 src_res = gnome.compile_resources(
-  'com.vixalien.sticky.src',
+  application_id + '.src',
   'com.vixalien.sticky.src.gresource.xml',
   dependencies: typescript,
   gresource_bundle: true,
