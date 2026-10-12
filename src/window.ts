@@ -262,7 +262,6 @@ export class Window extends Adw.ApplicationWindow {
     this.note.modified_date = new Date();
   }
 
-  last_revealer = false;
 
   update_link(selected: boolean, text: string) {
     if (selected) {
