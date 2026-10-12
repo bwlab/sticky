@@ -147,7 +147,7 @@ export const derive_title = (content: string) => {
   return title;
 };
 
-export const settings = new Gio.Settings({ schema_id: "com.vixalien.sticky" });
+export const settings = new Gio.Settings({ schema_id: "it.bwlab.StickyNotes" });
 
 const get_settings = () => ({
   DEFAULT_STYLE: settings.get_enum("default-style") as Style,

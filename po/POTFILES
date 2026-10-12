@@ -1,8 +1,8 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-data/com.vixalien.sticky.desktop.in.in
-data/com.vixalien.sticky.appdata.xml.in.in
-data/com.vixalien.sticky.gschema.xml.in
+data/it.bwlab.StickyNotes.desktop.in.in
+data/it.bwlab.StickyNotes.appdata.xml.in.in
+data/it.bwlab.StickyNotes.gschema.xml.in
 data/ui/card.ui
 data/ui/help-overlay.ui
 data/ui/notes.ui
@@ -12,6 +12,7 @@ src/application.ts
 src/card.ts
 src/main.ts
 src/notes.ts
+src/preferences.ts
 src/styleselector.ts
 src/trayicon.ts
 src/util.ts

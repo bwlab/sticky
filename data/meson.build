@@ -3,11 +3,11 @@ desktop_conf.set('app-id', application_id)
 
 desktop_file = i18n.merge_file(
   input: configure_file(
-  	input: 'com.vixalien.sticky.desktop.in.in',
+  	input: 'it.bwlab.StickyNotes.desktop.in.in',
   	output: '@BASENAME@',
   	configuration: desktop_conf
   ),
-  output: 'com.vixalien.sticky.desktop',
+  output: application_id + '.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -24,13 +24,13 @@ appstream_conf.set('app-id', application_id)
 appstream_conf.set('gettext-package', GETTEXT_PACKAGE)
 
 appstream_file = i18n.merge_file(
-  input: 'com.vixalien.sticky.appdata.xml.in',
+  input: application_id + '.appdata.xml.in',
     input: configure_file(
-  	input: 'com.vixalien.sticky.appdata.xml.in.in',
+  	input: 'it.bwlab.StickyNotes.appdata.xml.in.in',
   	output: '@BASENAME@',
   	configuration: appstream_conf
 	),
-  output: 'com.vixalien.sticky.appdata.xml',
+  output: application_id + '.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -46,8 +46,8 @@ gsettings_conf.set('app-id', application_id)
 gsettings_conf.set('gettext-package', GETTEXT_PACKAGE)
 
 gsettings_schema = configure_file(
-  input: 'com.vixalien.sticky.gschema.xml.in',
-  output: 'com.vixalien.sticky.gschema.xml',
+  input: 'it.bwlab.StickyNotes.gschema.xml.in',
+  output: application_id + '.gschema.xml',
   configuration: gsettings_conf,
   install: true,
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')

@@ -275,11 +275,11 @@ export class TrayIcon {
   private make_item_implementation() {
     return {
       Category: "ApplicationStatus",
-      Id: pkg.name,
+      Id: this.app.application_id!,
       Title: _("Sticky Notes"),
       Status: "Active",
       WindowId: 0,
-      IconName: pkg.name,
+      IconName: this.app.application_id!,
       OverlayIconName: "",
       AttentionIconName: "",
       AttentionMovieName: "",

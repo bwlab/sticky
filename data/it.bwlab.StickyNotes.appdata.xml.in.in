@@ -3,41 +3,46 @@
 	<id>@app-id@</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>MIT</project_license>
-	<name>Sticky Notes</name>
-	<summary>Pin notes to your desktop</summary>
+	<name>Sticky Notes+</name>
+	<summary>Pin notes with images and colors to your desktop</summary>
 	<description>
 		<p>
-			Sticky Notes is a simple sticky notes app for GNOME. It allows you to create
-			notes and format them.
+			Sticky Notes+ is a sticky notes app for GNOME, a fork of Sticky Notes by
+			Angelo Verlain. It lets you create notes, format them and keep them on
+			your desktop.
 		</p>
-		<p>Current features:</p>
+		<p>Features:</p>
 		<ul>
-			<li>simple formatting (bold, italic, underline and strikethrough)</li>
-			<li>notes are restored if they were open when the application was closed</li>
-			<li>changing color of notes</li>
-			<li>dark theme support</li>
+			<li>formatting: bold, italic, underline, strikethrough, checklists and bullets</li>
+			<li>images pasted from the clipboard or dropped into a note</li>
+			<li>twenty note colors, with dark theme support</li>
+			<li>notes keep their title, font size and window position</li>
+			<li>a tray icon with quick access to all notes</li>
+			<li>import and export of notes, images included</li>
+			<li>notes are never deleted because of an unreadable file</li>
 		</ul>
+		<p>
+			Keeping a note above other windows and remembering where it was needs the
+			separate GNOME Shell extension "Sticky Notes Extras".
+		</p>
 	</description>
 	<screenshots>
 		<screenshot type="default">
-			<image>https://raw.githubusercontent.com/vixalien/sticky/v0.1.1/data/resources/screenshots/note.png</image>
+			<image>https://raw.githubusercontent.com/luigimassa/sticky/v0.3.0/data/resources/screenshots/note.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/vixalien/sticky/v0.1.1/data/resources/screenshots/notes.png</image>
+			<image>https://raw.githubusercontent.com/luigimassa/sticky/v0.3.0/data/resources/screenshots/notes.png</image>
 		</screenshot>
 	</screenshots>
 	<launchable type="desktop-id">@app-id@.desktop</launchable>
-	<url type="homepage">https://github.com/vixalien/sticky</url>
-	<url type="bugtracker">https://github.com/vixalien/sticky/issues</url>
-	<url type="vcs-browser">https://github.com/vixalien/sticky</url>
-	<url type="translate">https://github.com/vixalien/sticky/tree/main/po</url>
-	<url type="donation">https://www.buymeacoffee.com/vixalien</url>
-	<!-- developer_name tag deprecated with Appstream 1.0 -->
-	<developer_name translate="no">Angelo Verlain</developer_name>
-  <developer id="com.vixalien">
-    <name>Angelo Verlain</name>
+	<url type="homepage">https://github.com/luigimassa/sticky</url>
+	<url type="bugtracker">https://github.com/luigimassa/sticky/issues</url>
+	<url type="vcs-browser">https://github.com/luigimassa/sticky</url>
+	<url type="translate">https://github.com/luigimassa/sticky/tree/main/po</url>
+  <developer id="it.bwlab">
+    <name>bwlab</name>
   </developer>
-	<update_contact>hey_at_vixalien.com</update_contact>
+	<update_contact>info_at_bwlab.it</update_contact>
 	<translation type="gettext">sticky</translation>
 	<requires>
 		<display_length compare="ge">360</display_length>
@@ -49,6 +54,21 @@
 		<control>tablet</control>
 	</recommends>
 	<releases>
+		<release version="0.3.0" date="2026-10-12">
+			<description translate="no">
+				<p>First release of Sticky Notes+, a fork of Sticky Notes</p>
+				<ul>
+					<li>Fixed a bug that could delete every note when one file could not be read</li>
+					<li>Images in notes: paste them from the clipboard or drop image files</li>
+					<li>Twenty note colors, with a color picker in the formatting bar</li>
+					<li>Square-cornered notes with a thinner header</li>
+					<li>Checklists, bullets, note titles, font size and import and export of notes</li>
+					<li>A tray icon listing the notes, with a New Note entry</li>
+					<li>An option to show all notes at startup</li>
+					<li>Always on Top and remembered window position, with the optional GNOME Shell extension</li>
+				</ul>
+			</description>
+		</release>
 		<release version="0.2.7" date="2025-04-16">
 			<description>
 				<p>Fix an issue where launching the application would exit unsuccessfully</p>
@@ -211,10 +231,6 @@
 			</description>
 		</release>
 	</releases>
-	<kudos>
-		<kudo>ModernToolkit</kudo>
-		<kudo>Notifications</kudo>
-	</kudos>
 	<content_rating type="oars-1.1" />
 	<provides>@app-id@.desktop</provides>
 </component>

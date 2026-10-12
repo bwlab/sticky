@@ -1,5 +1,5 @@
 {
-  "id": "com.vixalien.sticky",
+  "id": "it.bwlab.StickyNotes",
   "runtime": "org.gnome.Platform",
   "runtime-version": "50",
   "sdk": "org.gnome.Sdk",
@@ -12,7 +12,7 @@
   "build-options": {
     "append-path": "/usr/lib/sdk/node20/bin"
   },
-  "command": "com.vixalien.sticky",
+  "command": "it.bwlab.StickyNotes",
   "finish-args": [
     "--share=ipc",
     "--device=dri",

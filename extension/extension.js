@@ -5,7 +5,12 @@ import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
-const APP_IDS = ["com.vixalien.sticky", "com.vixalien.sticky.Devel"];
+const APP_IDS = [
+  "it.bwlab.StickyNotes",
+  "it.bwlab.StickyNotes.Devel",
+  "com.vixalien.sticky",
+  "com.vixalien.sticky.Devel",
+];
 const ACTION = "keep-above";
 const POSITION = "position";
 // wait for the window to stop moving before reporting where it is

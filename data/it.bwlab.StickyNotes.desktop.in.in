@@ -1,6 +1,6 @@
 [Desktop Entry]
-Comment=Pin notes to your desktop
-Name=Sticky Notes
+Comment=Pin notes with images and colors to your desktop
+Name=Sticky Notes+
 Exec=@app-id@
 Icon=@app-id@
 Terminal=false

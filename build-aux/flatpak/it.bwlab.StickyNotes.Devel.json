@@ -1,5 +1,5 @@
 {
-  "id": "com.vixalien.sticky.Devel",
+  "id": "it.bwlab.StickyNotes.Devel",
   "runtime": "org.gnome.Platform",
   "runtime-version": "50",
   "sdk": "org.gnome.Sdk",
@@ -12,7 +12,7 @@
   "build-options": {
     "append-path": "/usr/lib/sdk/node20/bin"
   },
-  "command": "com.vixalien.sticky",
+  "command": "it.bwlab.StickyNotes",
   "finish-args": [
     "--share=ipc",
     "--device=dri",
@@ -63,8 +63,8 @@
       ]
     }
   ],
-  "rename-desktop-file": "com.vixalien.sticky.desktop",
-  "rename-appdata-file": "com.vixalien.sticky.appdata.xml",
-  "rename-icon": "com.vixalien.sticky",
+  "rename-desktop-file": "it.bwlab.StickyNotes.desktop",
+  "rename-appdata-file": "it.bwlab.StickyNotes.appdata.xml",
+  "rename-icon": "it.bwlab.StickyNotes",
   "desktop-file-name-prefix": "(Devel) "
 }

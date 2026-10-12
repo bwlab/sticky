@@ -1,4 +1,4 @@
-application_id = 'com.vixalien.sticky'
+application_id = 'it.bwlab.StickyNotes'
 
 scalable_dir = join_paths('hicolor', 'scalable', 'apps')
 install_data(

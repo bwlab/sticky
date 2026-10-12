@@ -1,12 +1,15 @@
 <div align="center">
-<img src="/data/icons/hicolor/scalable/apps/com.vixalien.sticky.svg" height="64">
+<img src="/data/icons/hicolor/scalable/apps/it.bwlab.StickyNotes.svg" height="64">
 
-# Sticky Notes
+# Sticky Notes+
 
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
 
-Sticky Notes is a simple note taking application for the GNOME desktop. It is
-written in GJS and uses GTK4.
+Sticky Notes+ is a note taking application for the GNOME desktop, with images,
+twenty colors, checklists and a tray icon. It is written in GJS and uses GTK4.
+
+It is a fork of [Sticky Notes](https://github.com/vixalien/sticky) by Angelo
+Verlain and Christopher Davis, and keeps its MIT license.
 
 ![All notes](data/resources/screenshots/notes.png)
 ![Note](data/resources/screenshots/note.png)
@@ -15,18 +18,30 @@ written in GJS and uses GTK4.
 
 ## Installation
 
-### From Flathub
+### Flatpak
 
-Sticky Notes is available to download on
-[Flathub](https://flathub.org/apps/details/com.vixalien.sticky).
+Download `it.bwlab.StickyNotes.flatpak` from the
+[releases](https://github.com/luigimassa/sticky/releases) and install it:
 
-<a href="https://flathub.org/apps/details/com.vixalien.sticky" title="Download on Flathub">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://flathub.org/api/badge?locale=en&light">
-    <source media="(prefers-color-scheme: light)" srcset="https://flathub.org/api/badge?locale=en">
-    <img alt="Download Sticky Notes on Flathub" src="https://flathub.org/api/badge?locale=en">
-  </picture>
-</a>
+```sh
+flatpak install --user it.bwlab.StickyNotes.flatpak
+```
+
+The app id is `it.bwlab.StickyNotes`, so it runs next to the original Sticky
+Notes and keeps its own notes. To bring your notes over, copy the `notes` folder
+of the original app (`~/.var/app/com.vixalien.sticky/data/com.vixalien.sticky/notes`)
+into `~/.var/app/it.bwlab.StickyNotes/data/com.vixalien.sticky/` while neither
+app is running, or use *Import Notes…* with a file exported by this app.
+
+### GNOME Shell extension (optional)
+
+Wayland apps cannot stay above other windows or choose where they open, so
+those two features come from a small extension in [`extension/`](extension).
+Copy it to `~/.local/share/gnome-shell/extensions/sticky-notes-extras@luigimassa.github.io`,
+enable it and log out and in again.
+
+The tray icon needs a host for status notifier items, such as the
+*AppIndicator and KStatusNotifierItem Support* extension on GNOME.
 
 ### From source
 
@@ -34,7 +49,7 @@ To install from source, you need `nodejs` and `yarn` installed. Then, you need
 to clone the repository by being careful to also pull in the submodules:
 
 ```sh
-git clone https://github.com/vixalien/sticky.git --recurse-submodules
+git clone https://github.com/luigimassa/sticky.git --recurse-submodules
 ```
 
 Open the project in GNOME Builder and click "Run Project".

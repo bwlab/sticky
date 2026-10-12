@@ -69,7 +69,7 @@ export class Application extends Adw.Application {
     super({
       // set by the launcher, so that a development build can run next to the stable one
       application_id: (globalThis as { STICKY_APP_ID?: string }).STICKY_APP_ID ??
-        "com.vixalien.sticky",
+        "it.bwlab.StickyNotes",
       // the app id decides where style.css is looked up: keep it fixed
       resource_base_path: "/com/vixalien/sticky",
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
@@ -397,11 +397,12 @@ export class Application extends Adw.Application {
   show_about() {
     const aboutParams: Partial<Adw.AboutWindow.ConstructorProps> = {
       transient_for: this.active_window,
-      application_name: _("Sticky Notes"),
-      application_icon: pkg.name,
-      developer_name: "Angelo Verlain",
+      application_name: _("Sticky Notes+"),
+      application_icon: this.application_id,
+      developer_name: "bwlab",
       version: pkg.version,
       developers: [
+        "bwlab <info@bwlab.it>",
         "Angelo Verlain <hey@vixalien.com>",
         "Christopher Davis <christopherdavis@gnome.org>",
       ],
@@ -410,10 +411,10 @@ export class Application extends Adw.Application {
       ],
       // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>' or 'Translator Name https://website.example'
       translator_credits: _("translator-credits"),
-      copyright: "© 2023 Angelo Verlain, Christopher Davis",
+      copyright: "© 2023 Angelo Verlain, Christopher Davis, © 2026 bwlab",
       license_type: Gtk.License.MIT_X11,
-      website: "https://github.com/vixalien/sticky",
-      issue_url: "https://github.com/vixalien/sticky/issues",
+      website: "https://github.com/luigimassa/sticky",
+      issue_url: "https://github.com/luigimassa/sticky/issues",
     };
 
     const aboutWindow = new Adw.AboutWindow(aboutParams);
