@@ -413,8 +413,8 @@ export class Application extends Adw.Application {
       translator_credits: _("translator-credits"),
       copyright: "© 2023 Angelo Verlain, Christopher Davis, © 2026 bwlab",
       license_type: Gtk.License.MIT_X11,
-      website: "https://github.com/luigimassa/sticky",
-      issue_url: "https://github.com/luigimassa/sticky/issues",
+      website: "https://github.com/bwlab/sticky",
+      issue_url: "https://github.com/bwlab/sticky/issues",
     };
 
     const aboutWindow = new Adw.AboutWindow(aboutParams);

@@ -21,7 +21,7 @@ Verlain and Christopher Davis, and keeps its MIT license.
 ### Flatpak
 
 Download `it.bwlab.StickyNotes.flatpak` from the
-[releases](https://github.com/luigimassa/sticky/releases) and install it:
+[releases](https://github.com/bwlab/sticky/releases) and install it:
 
 ```sh
 flatpak install --user it.bwlab.StickyNotes.flatpak
@@ -37,7 +37,7 @@ app is running, or use *Import Notes…* with a file exported by this app.
 
 Wayland apps cannot stay above other windows or choose where they open, so
 those two features come from a small extension in [`extension/`](extension).
-Copy it to `~/.local/share/gnome-shell/extensions/sticky-notes-extras@luigimassa.github.io`,
+Copy it to `~/.local/share/gnome-shell/extensions/sticky-notes-extras@bwlab.it`,
 enable it and log out and in again.
 
 The tray icon needs a host for status notifier items, such as the
@@ -49,7 +49,7 @@ To install from source, you need `nodejs` and `yarn` installed. Then, you need
 to clone the repository by being careful to also pull in the submodules:
 
 ```sh
-git clone https://github.com/luigimassa/sticky.git --recurse-submodules
+git clone https://github.com/bwlab/sticky.git --recurse-submodules
 ```
 
 Open the project in GNOME Builder and click "Run Project".

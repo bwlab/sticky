@@ -1,7 +1,7 @@
 {
-  "uuid": "sticky-notes-extras@luigimassa.github.io",
+  "uuid": "sticky-notes-extras@bwlab.it",
   "name": "Sticky Notes Extras",
   "description": "Keeps the notes of Sticky Notes above other windows when they are set to Always on Top.",
   "shell-version": ["50"],
-  "url": "https://github.com/luigimassa/sticky"
+  "url": "https://github.com/bwlab/sticky"
 }
