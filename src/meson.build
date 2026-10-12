@@ -54,7 +54,7 @@ bin_conf.set('resource_path', '/com/vixalien/sticky')
 
 app_launcher = configure_file(
   input: 'com.vixalien.sticky.in',
-  output: 'com.vixalien.sticky',
+  output: application_id,
   configuration: bin_conf,
   install: true,
   install_dir: get_option('bindir'),
