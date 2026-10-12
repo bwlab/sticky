@@ -350,6 +350,29 @@ export class Window extends Adw.ApplicationWindow {
     delete_.connect("activate", () => this.delete());
     this.add_action(delete_);
 
+    // the two actions below are read by the GNOME Shell extension, which keeps
+    // the window above the others (Wayland clients can't do that themselves)
+    const keep_above = Gio.SimpleAction.new_stateful(
+      "keep-above",
+      null,
+      GLib.Variant.new_boolean(this.note.keep_above),
+    );
+    keep_above.connect("change-state", (_, value) => {
+      if (!value) return;
+
+      this.note.keep_above = value.get_boolean();
+      keep_above.set_state(value);
+    });
+    this.add_action(keep_above);
+
+    this.add_action(
+      Gio.SimpleAction.new_stateful(
+        "note-uuid",
+        null,
+        GLib.Variant.new_string(this.note.uuid),
+      ),
+    );
+
     const set_font_size = Gio.SimpleAction.new_stateful(
       "set-font-size",
       GLib.VariantType.new("i"),

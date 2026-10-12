@@ -247,6 +247,10 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Always on Top</attribute>
+        <attribute name="action">win.keep-above</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Rename Note</attribute>
         <attribute name="action">win.rename</attribute>
       </item>

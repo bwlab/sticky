@@ -62,6 +62,7 @@ export interface INote {
   width: number;
   height: number;
   open: boolean;
+  keep_above?: boolean;
 }
 
 export enum Style {
@@ -177,6 +178,7 @@ export class Note extends GObject.Object {
   width: number;
   height: number;
   open: boolean;
+  keep_above: boolean;
 
   get tags() {
     const items = [];
@@ -237,6 +239,7 @@ export class Note extends GObject.Object {
     this.width = note.width;
     this.height = note.height;
     this.open = note.open ?? false;
+    this.keep_above = note.keep_above ?? false;
 
     const update_display_title = () => {
       const display_title = this.title || derive_title(this.content);
@@ -261,6 +264,7 @@ export class Note extends GObject.Object {
       width: 300,
       height: 300,
       open: false,
+      keep_above: false,
     });
   }
 
@@ -281,6 +285,7 @@ export class Note extends GObject.Object {
       width: this.width,
       height: this.height,
       open: this.open,
+      keep_above: this.keep_above,
     });
   }
 
@@ -297,6 +302,7 @@ export class Note extends GObject.Object {
       width: this.width,
       height: this.height,
       open: this.open,
+      keep_above: this.keep_above,
     };
   }
 
@@ -328,6 +334,8 @@ export class Note extends GObject.Object {
         height: GObject.ParamSpec.int("height", "Height", "Height of the note", GObject.ParamFlags.READWRITE, 0, 100, 0),
         // deno-fmt-ignore
         open: GObject.ParamSpec.boolean("open", "Open", "Whether the note was open when the application was closed", GObject.ParamFlags.READWRITE, false),
+        // deno-fmt-ignore
+        keep_above: GObject.ParamSpec.boolean("keep-above", "Keep Above", "Whether the note stays above other windows", GObject.ParamFlags.READWRITE, false),
       },
     }, this);
   }
