@@ -39,6 +39,7 @@ export class Window extends Adw.ApplicationWindow {
   declare _container: Gtk.Box;
   declare _text: Gtk.TextView;
   declare _menu_button: Gtk.MenuButton;
+  declare _title_label: Gtk.EditableLabel;
 
   declare _bold_button: Gtk.ToggleButton;
   declare _underline_button: Gtk.ToggleButton;
@@ -66,6 +67,7 @@ export class Window extends Adw.ApplicationWindow {
         InternalChildren: [
           "container",
           "text",
+          "title_label",
           "bold_button",
           "underline_button",
           "italic_button",
@@ -101,7 +103,7 @@ export class Window extends Adw.ApplicationWindow {
     this.default_height = note.height;
 
     this.note.bind_property_full(
-      "title",
+      "display-title",
       this,
       "title",
       GObject.BindingFlags.SYNC_CREATE,
@@ -114,12 +116,30 @@ export class Window extends Adw.ApplicationWindow {
       null,
     );
 
+    // the label shows the same title as the window, so that a note that
+    // hasn't been given one still has something to click on to give it one
+    this.bind_property(
+      "title",
+      this._title_label,
+      "text",
+      GObject.BindingFlags.SYNC_CREATE,
+    );
+
+    this._title_label.connect("notify::editing", () => {
+      if (this._title_label.editing) return;
+      this.rename(this._title_label.text);
+    });
+
     this.connect("close-request", () => {
       this.cancel_cursor_scroll();
 
       if (this.deleted) return;
 
-      if (this.view.note && this.view.note.content.trim().length === 0) {
+      // a note that was given a title is worth keeping even while it is empty
+      if (
+        this.view.note && this.view.note.content.trim().length === 0 &&
+        !this.note.title
+      ) {
         (this.application as Application).delete_note(this.note.uuid);
         return;
       }
@@ -217,6 +237,33 @@ export class Window extends Adw.ApplicationWindow {
     this._text.vadjustment.value += offset;
   }
 
+  /**
+   * The title shown in the header bar and the window manager, which is the
+   * note's own title when it has one, and one derived from its content
+   * otherwise.
+   */
+  get display_title() {
+    return this.note.display_title || _("Sticky Note");
+  }
+
+  /**
+   * Gives the note the title left in the header bar, or takes its title away
+   * when the label was emptied, letting it follow the content again.
+   *
+   * The label shows the derived title of an untitled note, so text that was
+   * left as it was found means the note keeps having no title of its own.
+   */
+  rename(text: string) {
+    const title = text.trim();
+
+    if (title === this.display_title) return;
+
+    this.note.title = title;
+    this.note.modified_date = new Date();
+  }
+
+  last_revealer = false;
+
   update_link(selected: boolean, text: string) {
     if (selected) {
       const link = find(text)[0];
@@ -290,6 +337,10 @@ export class Window extends Adw.ApplicationWindow {
       set_font_size.set_state(GLib.Variant.new_int32(size));
     });
     this.add_action(set_font_size);
+
+    const rename = Gio.SimpleAction.new("rename", null);
+    rename.connect("activate", () => this._title_label.start_editing());
+    this.add_action(rename);
 
     for (const [name, tag] of this.view.actions) {
       const action = Gio.SimpleAction.new(name, null);
