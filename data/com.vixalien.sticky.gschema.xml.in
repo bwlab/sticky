@@ -9,6 +9,18 @@
 		<value nick="gray" value="6" />
 		<value nick="charcoal" value="7" />
 		<value nick="window" value="8" />
+		<value nick="orange" value="9" />
+		<value nick="peach" value="10" />
+		<value nick="coral" value="11" />
+		<value nick="red" value="12" />
+		<value nick="rose" value="13" />
+		<value nick="lavender" value="14" />
+		<value nick="indigo" value="15" />
+		<value nick="cyan" value="16" />
+		<value nick="aqua" value="17" />
+		<value nick="mint" value="18" />
+		<value nick="lime" value="19" />
+		<value nick="sand" value="20" />
 	</enum>
 	<schema id="@app-id@" path="/com/vixalien/sticky/" gettext-domain="@gettext-package@">
 		<key name="default-height" type="i">

@@ -69,18 +69,14 @@ class StyleButton extends Gtk.CheckButton {
   }
 }
 
-const props = {
-  orientation: Gtk.Orientation.HORIZONTAL,
-  spacing: 12,
-  hexpand: true,
-};
+const COLUMNS = 5;
 
 export class StyleSelector extends Gtk.Box {
-  box1 = new Gtk.Box(props);
-  box2 = new Gtk.Box(props);
-  box = new Gtk.Box({
-    orientation: Gtk.Orientation.VERTICAL,
-    spacing: 12,
+  grid = new Gtk.Grid({
+    row_spacing: 8,
+    column_spacing: 8,
+    column_homogeneous: true,
+    hexpand: true,
   });
 
   private _style: Style;
@@ -102,10 +98,7 @@ export class StyleSelector extends Gtk.Box {
   constructor(params: { style?: Style } = {}) {
     super();
 
-    this.box.append(this.box1);
-    this.box.append(this.box2);
-
-    this.append(this.box);
+    this.append(this.grid);
 
     this._style = this.style = params.style ?? Style.yellow;
     this.build_styles();
@@ -139,7 +132,7 @@ export class StyleSelector extends Gtk.Box {
         group = button;
       }
 
-      (i < 4 ? this.box1 : this.box2).append(button);
+      this.grid.attach(button, i % COLUMNS, Math.floor(i / COLUMNS), 1, 1);
     });
   }
 

@@ -145,6 +145,18 @@ const STYLE_COLORS = new Map<Style, string>([
   [Style.gray, "#dddad8"],
   [Style.charcoal, "#3f3d3c"],
   [Style.window, "#deddda"],
+  [Style.orange, "#ffcf9a"],
+  [Style.peach, "#ffd2c0"],
+  [Style.coral, "#ffc0ba"],
+  [Style.red, "#ffadad"],
+  [Style.rose, "#ffa3d1"],
+  [Style.lavender, "#d4cdff"],
+  [Style.indigo, "#b4c2ff"],
+  [Style.cyan, "#aee8f2"],
+  [Style.aqua, "#9ee8dc"],
+  [Style.mint, "#bdeccb"],
+  [Style.lime, "#e3f299"],
+  [Style.sand, "#e6d5b3"],
 ]);
 
 const SWATCH_SIZE = 16;
