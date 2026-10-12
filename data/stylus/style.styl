@@ -32,6 +32,13 @@ window.sticky-note, window.sticky-note.csd {
   border-radius: 2px;
 }
 
+window.sticky-note.csd:not(.maximized):not(.fullscreen):not(.tiled) {
+  // the shadow the note casts on the desktop
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.45),
+    0 14px 32px 6px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
 toolbarview.note-window {
   border-radius: 2px;
 
