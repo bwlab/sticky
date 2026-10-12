@@ -69,6 +69,8 @@ export class Application extends Adw.Application {
       // set by the launcher, so that a development build can run next to the stable one
       application_id: (globalThis as { STICKY_APP_ID?: string }).STICKY_APP_ID ??
         "com.vixalien.sticky",
+      // the app id decides where style.css is looked up: keep it fixed
+      resource_base_path: "/com/vixalien/sticky",
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
 
