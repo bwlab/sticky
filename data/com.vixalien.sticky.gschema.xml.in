@@ -43,6 +43,11 @@
 			<summary>Show all notes</summary>
 			<description>Whether to show the all notes window or note</description>
 		</key>
+		<key name="show-list-on-startup" type="b">
+			<default>false</default>
+			<summary>Show all notes on startup</summary>
+			<description>Whether the all notes window is opened at startup, together with the notes that were open</description>
+		</key>
 		<key name="font-size" type="i">
 			<default>12</default>
 			<summary>Font size for notes</summary>

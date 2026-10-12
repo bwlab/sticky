@@ -31,6 +31,7 @@ import Gtk from "gi://Gtk?version=4.0";
 import Gdk from "gi://Gdk?version=4.0";
 
 import { StickyNotes } from "./notes.js";
+import { show_preferences } from "./preferences.js";
 import { compare_notes_newest_first, INote, Note, settings } from "./util.js";
 import {
   delete_note,
@@ -189,7 +190,10 @@ export class Application extends Adw.Application {
     } else if (this.open_new_note) {
       this.new_note();
     } else {
-      if (settings.get_boolean("show-all-notes")) this.all_notes();
+      if (
+        settings.get_boolean("show-all-notes") ||
+        settings.get_boolean("show-list-on-startup")
+      ) this.all_notes();
 
       this.foreach_note((note) => {
         if (note.open) {
@@ -248,6 +252,13 @@ export class Application extends Adw.Application {
     const show_about_action = new Gio.SimpleAction({ name: "about" });
     show_about_action.connect("activate", () => this.show_about());
     this.add_action(show_about_action);
+
+    const preferences = new Gio.SimpleAction({ name: "preferences" });
+    preferences.connect(
+      "activate",
+      () => show_preferences(this.active_window),
+    );
+    this.add_action(preferences);
 
     const new_note = new Gio.SimpleAction({ name: "new-note" });
     new_note.connect("activate", () => this.new_note());
