@@ -165,7 +165,9 @@ const SWATCH_BORDER = 1;
 // hosts cache menu items by id, so ids must be stable across rebuilds
 const SEPARATOR_ID = 1;
 const OPEN_ID = 2;
-const FIRST_NOTE_ID = 3;
+const NEW_NOTE_ID = 3;
+const NEW_NOTE_SEPARATOR_ID = 4;
+const FIRST_NOTE_ID = 5;
 
 interface TrayMenuItem {
   id: number;
@@ -516,7 +518,21 @@ export class TrayIcon {
   }
 
   private rebuild_menu() {
-    const items: TrayMenuItem[] = [];
+    // creating a note is the most common thing to do from here, so it comes first
+    const items: TrayMenuItem[] = [
+      {
+        id: NEW_NOTE_ID,
+        properties: {
+          label: new GLib.Variant("s", escape_label(_("New Note"))),
+          "icon-name": new GLib.Variant("s", "list-add-symbolic"),
+        },
+        activate: () => this.app.new_note(),
+      },
+      {
+        id: NEW_NOTE_SEPARATOR_ID,
+        properties: { type: new GLib.Variant("s", "separator") },
+      },
+    ];
 
     const notes = this.app.notes_array().sort(compare_notes_newest_first);
 
