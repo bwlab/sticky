@@ -1,0 +1,70 @@
+{
+  "id": "com.vixalien.sticky.Devel",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "50",
+  "sdk": "org.gnome.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.node20"
+  ],
+  "tags": [
+    "devel"
+  ],
+  "build-options": {
+    "append-path": "/usr/lib/sdk/node20/bin"
+  },
+  "command": "com.vixalien.sticky",
+  "finish-args": [
+    "--share=ipc",
+    "--device=dri",
+    "--socket=wayland",
+    "--socket=fallback-x11",
+    "--talk-name=org.kde.StatusNotifierWatcher",
+    "--env=GJS_DISABLE_JIT=1"
+  ],
+  "cleanup": [
+    "/include",
+    "/lib/pkgconfig",
+    "/man",
+    "/share/doc",
+    "/share/gtk-doc",
+    "/share/man",
+    "/share/pkgconfig",
+    "*.la",
+    "*.a",
+    "/yarn-mirror"
+  ],
+  "modules": [
+    {
+      "name": "yarn-deps",
+      "buildsystem": "simple",
+      "build-commands": [
+        "/usr/lib/sdk/node20/enable.sh",
+        "mkdir -p /app",
+        "cp -r $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror/ /app",
+        "echo $'yarn-offline-mirror \"/app/yarn-mirror\"' > /app/.yarnrc"
+      ],
+      "sources": [
+        "generated-sources.json"
+      ]
+    },
+    {
+      "name": "sticky-notes",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Dyarnrc=/app/.yarnrc",
+        "-Dprofile=development"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "../..",
+          "branch": "HEAD"
+        }
+      ]
+    }
+  ],
+  "rename-desktop-file": "com.vixalien.sticky.desktop",
+  "rename-appdata-file": "com.vixalien.sticky.appdata.xml",
+  "rename-icon": "com.vixalien.sticky",
+  "desktop-file-name-prefix": "(Devel) "
+}
