@@ -4,6 +4,7 @@ sources = [
   'application.ts',
   'card.ts',
   'errors.ts',
+  'images.ts',
   'main.ts',
   'notes.ts',
   'preferences.ts',

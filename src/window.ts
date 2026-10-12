@@ -186,6 +186,7 @@ export class Window extends Adw.ApplicationWindow {
     this.view.buffer.connect("changed", this.queue_cursor_scroll.bind(this));
 
     this.view.attach_checkbox_gesture(this._text);
+    this.view.attach_images(this._text);
 
     this.add_actions();
     this.apply_font_size();

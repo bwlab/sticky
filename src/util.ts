@@ -50,6 +50,15 @@ export interface ITag {
   end: number;
 }
 
+/** An image in a note: the offset of its placeholder and the file it lives in. */
+export interface NoteImage {
+  offset: number;
+  file: string;
+}
+
+/** The character a note's content holds in place of each image. */
+export const IMAGE_PLACEHOLDER = "\uFFFC";
+
 export interface INote {
   v: 1;
   uuid: string;
@@ -62,6 +71,7 @@ export interface INote {
   width: number;
   height: number;
   open: boolean;
+  images?: NoteImage[];
 }
 
 export enum Style {
@@ -96,6 +106,10 @@ export const styles = Object.values(Style).filter(
  */
 export const derive_title = (content: string) => {
   if (!content) return "";
+  // an image has no text of its own to start a title with
+  const text = content.split(IMAGE_PLACEHOLDER).join("");
+  if (!text.trim() && text.length !== content.length) return _("Image");
+  content = text;
   let title = content.split("\n")[0].slice(0, 20);
   if (title.length != content.length) title += "…";
   return title;
@@ -177,6 +191,8 @@ export class Note extends GObject.Object {
   width: number;
   height: number;
   open: boolean;
+  // not a GObject property: kept up to date by the view that shows the note
+  images: NoteImage[];
 
   get tags() {
     const items = [];
@@ -237,6 +253,7 @@ export class Note extends GObject.Object {
     this.width = note.width;
     this.height = note.height;
     this.open = note.open ?? false;
+    this.images = note.images ?? [];
 
     const update_display_title = () => {
       const display_title = this.title || derive_title(this.content);
@@ -281,6 +298,7 @@ export class Note extends GObject.Object {
       width: this.width,
       height: this.height,
       open: this.open,
+      images: this.images.map((image) => ({ ...image })),
     });
   }
 
@@ -297,6 +315,8 @@ export class Note extends GObject.Object {
       width: this.width,
       height: this.height,
       open: this.open,
+      // left out when empty, so notes without images keep their old format
+      images: this.images.length ? this.images : undefined,
     };
   }
 

@@ -30,6 +30,7 @@ import GLib from "gi://GLib";
 import Gtk from "gi://Gtk?version=4.0";
 import Gdk from "gi://Gdk?version=4.0";
 
+import { export_images, import_images } from "./images.js";
 import { StickyNotes } from "./notes.js";
 import { show_preferences } from "./preferences.js";
 import { compare_notes_newest_first, INote, Note, settings } from "./util.js";
@@ -584,7 +585,11 @@ export class Application extends Adw.Application {
       const notes = this.notes_array();
       const data = {
         v: 1,
-        notes: notes.map((n) => n.toJSON()),
+        // the images travel inside the file, so the export is self-contained
+        notes: notes.map((n) => ({
+          ...n.toJSON(),
+          images: n.images.length ? export_images(n.images) : undefined,
+        })),
       };
       const encoder = new TextEncoder();
       file.replace_contents(
@@ -629,6 +634,7 @@ export class Application extends Adw.Application {
       data.notes.forEach((noteData: INote) => {
         // Avoid duplicates by UUID
         if (!this.find_note(noteData.uuid)) {
+          noteData.images = import_images(noteData.images);
           const note = new Note(noteData);
           note.connect("notify::modified", () => save_note(note));
           note.connect("notify::open", () => save_note(note));

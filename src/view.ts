@@ -23,6 +23,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+import Gdk from "gi://Gdk?version=4.0";
+import GLib from "gi://GLib";
 import GObject from "gi://GObject";
 import Gtk from "gi://Gtk?version=4.0";
 import Pango from "gi://Pango";
@@ -30,7 +32,14 @@ import Adw from "gi://Adw?version=1";
 
 import { find } from "linkifyjs";
 
-import { ITag, Note } from "./util.js";
+import {
+  clipboard_has_image,
+  load_texture,
+  read_clipboard_textures,
+  save_texture,
+  textures_from_files,
+} from "./images.js";
+import { IMAGE_PLACEHOLDER, ITag, Note, NoteImage } from "./util.js";
 import { Style } from "./util.js";
 
 /**
@@ -46,6 +55,16 @@ export const BULLET = "•";
 const CHECK_PREFIXES = [`${UNCHECKED} `, `${CHECKED} `];
 const BULLET_PREFIXES = [`${BULLET} `];
 const LIST_PREFIXES = [...CHECK_PREFIXES, ...BULLET_PREFIXES];
+
+// The images of a note are child anchors in its buffer, each one standing for
+// a file. They are kept here rather than in fields because the buffer is filled
+// while the view is still being constructed, before fields are initialized.
+const image_anchors = new WeakMap<object, Map<Gtk.TextChildAnchor, string>>();
+const anchors_of = (view: object) => {
+  let anchors = image_anchors.get(view);
+  if (!anchors) image_anchors.set(view, anchors = new Map());
+  return anchors;
+};
 
 export type TextSize = "normal" | "small" | "large" | "larger";
 
@@ -127,12 +146,28 @@ class AbstractStickyNote extends Gtk.TextView {
     this._note = note;
     this.clear_tags();
     this.buffer.text = note.content;
+    this.restore_images(note);
     this.init_tags(note.tags);
     this.update_markers();
 
     this.update_link_tag_color();
     this.remove_listeners();
     this.init_listeners();
+  }
+
+  /** Puts the images of the note back where its content has placeholders. */
+  restore_images(_note: Note) {}
+
+  /**
+   * The content of the note: the text, with a placeholder for each image, so
+   * that the offsets of tags and images match the ones in the buffer.
+   */
+  get content_text() {
+    return this.buffer.get_slice(
+      this.buffer.get_start_iter(),
+      this.buffer.get_end_iter(),
+      true,
+    );
   }
 
   listeners = new Set<number>();
@@ -617,7 +652,9 @@ export class ReadonlyStickyNote extends AbstractStickyNote {
         -1,
       );
     } else {
-      this.buffer.text = this.clip_content(this.note!.content);
+      this.buffer.text = this.clip_content(
+        this.note!.content.split(IMAGE_PLACEHOLDER).join("▣"),
+      );
       this.clear_tags();
       this.init_tags(this.note!.tags);
       this.update_markers();
@@ -664,7 +701,212 @@ export class WriteableStickyNote extends AbstractStickyNote {
   }
 
   updating = false;
+  restoring = false;
   source: number | null = null;
+
+  // the text views showing this buffer, with the widget each one has for an image
+  image_views = new Map<Gtk.TextView, Map<Gtk.TextChildAnchor, Gtk.Widget>>();
+
+  restore_images(note: Note) {
+    const anchors = anchors_of(this);
+    anchors.clear();
+    if (!note.images.length) return;
+
+    this.restoring = true;
+    try {
+      for (const { offset, file } of note.images) {
+        const at = this.buffer.get_iter_at_offset(offset);
+        // gunichar comes back as a string or a number depending on the binding
+        const char = at.get_char() as unknown as string | number;
+        if (char !== IMAGE_PLACEHOLDER && char !== IMAGE_PLACEHOLDER.codePointAt(0)) {
+          continue;
+        }
+
+        const end = at.copy();
+        end.forward_char();
+        this.buffer.delete(at, end);
+
+        const anchor = this.buffer.create_child_anchor(
+          this.buffer.get_iter_at_offset(offset),
+        );
+        anchors.set(anchor, file);
+      }
+    } finally {
+      this.restoring = false;
+    }
+  }
+
+  /** The images the buffer holds right now, as they are saved in the note. */
+  collect_images() {
+    const anchors = anchors_of(this);
+    const images: NoteImage[] = [];
+
+    for (const anchor of [...anchors.keys()]) {
+      if (anchor.get_deleted()) anchors.delete(anchor);
+    }
+    if (!anchors.size) return images;
+
+    const at = this.buffer.get_start_iter();
+    do {
+      const file = anchors.get(at.get_child_anchor() as Gtk.TextChildAnchor);
+      if (file) images.push({ offset: at.get_offset(), file });
+    } while (at.forward_char());
+
+    return images;
+  }
+
+  on_content_changed() {
+    this.update_links();
+    this.update_markers();
+    this.sync_images();
+    const content = this.content_text;
+    if (content == this.note!.content) return;
+    this.change("content", content);
+  }
+
+  sync_images() {
+    const note = this.note;
+    if (!note) return;
+
+    const images = this.collect_images();
+    if (JSON.stringify(images) !== JSON.stringify(note.images)) {
+      note.images = images;
+    }
+  }
+
+  /** Puts the image `file` in the note, at the cursor unless told where. */
+  insert_image(file: string, at?: Gtk.TextIter) {
+    const iter = at ?? this.buffer.get_iter_at_mark(this.buffer.get_insert());
+
+    // the change is handled once the anchor is known, or its image would be
+    // left out of the note until the next edit
+    this.restoring = true;
+    const anchor = this.buffer.create_child_anchor(iter);
+    anchors_of(this).set(anchor, file);
+    this.restoring = false;
+    this.on_content_changed();
+
+    for (const text_view of this.image_views.keys()) {
+      this.add_picture(text_view, anchor, file);
+    }
+  }
+
+  insert_textures(textures: Gdk.Texture[], at?: Gtk.TextIter) {
+    for (const texture of textures) this.insert_image(save_texture(texture), at);
+  }
+
+  private add_picture(
+    text_view: Gtk.TextView,
+    anchor: Gtk.TextChildAnchor,
+    file: string,
+  ) {
+    const texture = load_texture(file);
+    const widget: Gtk.Widget = texture
+      ? new Gtk.Picture({
+        paintable: texture,
+        can_shrink: true,
+        content_fit: Gtk.ContentFit.SCALE_DOWN,
+        halign: Gtk.Align.START,
+      })
+      : new Gtk.Label({ label: `(${_("Image not found")})` });
+
+    widget.add_css_class("note-image");
+    (widget as any).natural_size = texture
+      ? [texture.get_width(), texture.get_height()]
+      : null;
+
+    text_view.add_child_at_anchor(widget, anchor);
+    this.fit_picture(text_view, widget);
+    this.image_views.get(text_view)!.set(anchor, widget);
+  }
+
+  /**
+   * A text view gives an anchored widget its minimum size, which for a picture
+   * that can shrink is nothing, so the size is set here: the picture's own,
+   * or less when the note is narrower.
+   */
+  private fit_picture(text_view: Gtk.TextView, widget: Gtk.Widget) {
+    const natural = (widget as any).natural_size as [number, number] | null;
+    if (!natural) return;
+
+    const [width, height] = natural;
+    const room = text_view.get_width() - text_view.left_margin -
+      text_view.right_margin;
+    const fitted = room > 0 ? Math.max(32, Math.min(width, room)) : width;
+
+    widget.width_request = fitted;
+    widget.height_request = Math.max(1, Math.round(height * fitted / width));
+  }
+
+  /**
+   * Shows the images in `text_view`, a view of this note's buffer, and lets
+   * images be pasted or dropped into it.
+   *
+   * Like the checkbox gesture, this is done on the view the user works in,
+   * because the buffer is shared but widgets belong to one text view.
+   */
+  attach_images(text_view: Gtk.TextView) {
+    this.image_views.set(text_view, new Map());
+
+    for (const [anchor, file] of anchors_of(this)) {
+      if (!anchor.get_deleted()) this.add_picture(text_view, anchor, file);
+    }
+
+    // an image never grows wider than the note
+    let last_width = -1;
+    text_view.add_tick_callback(() => {
+      const width = text_view.get_width();
+      if (width === last_width) return GLib.SOURCE_CONTINUE;
+      last_width = width;
+
+      for (const widget of this.image_views.get(text_view)!.values()) {
+        this.fit_picture(text_view, widget);
+      }
+      return GLib.SOURCE_CONTINUE;
+    });
+
+    text_view.connect("paste-clipboard", () => this.paste_images(text_view));
+
+    const drop = Gtk.DropTarget.new(GObject.TYPE_NONE, Gdk.DragAction.COPY);
+    drop.set_gtypes([Gdk.FileList.$gtype, Gdk.Texture.$gtype]);
+    drop.connect("drop", (_drop, value, x, y) => {
+      const textures = value instanceof Gdk.Texture
+        ? [value]
+        : textures_from_files(value?.get_files?.() ?? []);
+      if (!textures.length) return false;
+
+      const [bx, by] = text_view.window_to_buffer_coords(
+        Gtk.TextWindowType.TEXT,
+        x,
+        y,
+      );
+      const [found, at] = text_view.get_iter_at_location(bx, by);
+      this.insert_textures(textures, found ? at : undefined);
+      return true;
+    });
+    text_view.add_controller(drop);
+  }
+
+  private paste_images(text_view: Gtk.TextView) {
+    const clipboard = text_view.get_clipboard();
+    const kind = clipboard_has_image(clipboard);
+    if (!kind.texture && !kind.files) return;
+
+    // whether it holds images is only known once it is read, so the default
+    // paste is always replaced, and puts text back when there are no images
+    text_view.stop_emission_by_name("paste-clipboard");
+
+    read_clipboard_textures(clipboard).then((textures) => {
+      if (textures.length) {
+        this.insert_textures(textures);
+      } else if (kind.files) {
+        clipboard.read_text_async(null, (_clipboard, result) => {
+          const text = clipboard.read_text_finish(result);
+          if (text) this.buffer.insert_at_cursor(text, -1);
+        });
+      }
+    }).catch(logError);
+  }
 
   get note() {
     return super.note;
@@ -689,14 +931,14 @@ export class WriteableStickyNote extends AbstractStickyNote {
     });
 
     this.buffer.connect("changed", () => {
+      // images are being put back one by one: the content hasn't changed
+      if (this.restoring) return;
+
       if (this.updating) {
         this.updating = false;
         return;
       }
-      this.update_links();
-      this.update_markers();
-      if (this.buffer.text == this.note!.content) return;
-      this.change("content", this.buffer.text);
+      this.on_content_changed();
     });
 
     this.buffer.connect("mark-set", () => {
@@ -780,7 +1022,7 @@ export class WriteableStickyNote extends AbstractStickyNote {
   }
 
   update_links() {
-    const text = this.buffer.text;
+    const text = this.content_text;
 
     this.clear_links();
 
