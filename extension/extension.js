@@ -93,6 +93,7 @@ export default class StickyNotesExtras extends Extension {
     if (above) window.make_above();
     else window.unmake_above();
     entry.raised = above;
+    console.log(`[sticky-notes-extras] ${window.get_title()} is_above=${window.is_above()}`);
   }
 
   // moves the window back to where the note was last seen, once. This has to

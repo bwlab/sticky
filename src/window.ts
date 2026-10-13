@@ -47,6 +47,7 @@ export class Window extends Adw.ApplicationWindow {
   declare _strikethrough_button: Gtk.ToggleButton;
   declare _format_button: Gtk.MenuButton;
   declare _color_button: Gtk.MenuButton;
+  declare _pin_button: Gtk.ToggleButton;
   declare _action_button: Gtk.ToggleButton;
   declare _action_revealer: Gtk.Revealer;
 
@@ -76,6 +77,7 @@ export class Window extends Adw.ApplicationWindow {
           "strikethrough_button",
           "format_button",
           "color_button",
+          "pin_button",
           "menu_button",
           "action_revealer",
           "action_button",
