@@ -54,6 +54,14 @@
 		<control>tablet</control>
 	</recommends>
 	<releases>
+		<release version="0.3.2" date="2026-10-13">
+			<description translate="no">
+				<ul>
+					<li>Always on Top is now a pin button in the title bar of each note</li>
+					<li>A pinned note stays above other windows and follows you across workspaces (with the optional GNOME Shell extension)</li>
+				</ul>
+			</description>
+		</release>
 		<release version="0.3.1" date="2026-10-13">
 			<description translate="no">
 				<ul>
