@@ -11,6 +11,7 @@ data/ui/window.ui
 src/application.ts
 src/card.ts
 src/main.ts
+src/migration.ts
 src/notes.ts
 src/preferences.ts
 src/styleselector.ts

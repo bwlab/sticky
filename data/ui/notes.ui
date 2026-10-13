@@ -158,6 +158,10 @@
         <attribute name="action">win.show-help-overlay</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Import from Original Sticky Notes…</attribute>
+        <attribute name="action">app.import-original</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Import Notes…</attribute>
         <attribute name="action">app.import</attribute>
       </item>

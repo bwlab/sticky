@@ -54,6 +54,14 @@
 		<control>tablet</control>
 	</recommends>
 	<releases>
+		<release version="0.3.1" date="2026-10-13">
+			<description translate="no">
+				<ul>
+					<li>On first start with no notes, the app offers to import the notes of the original Sticky Notes. They are only read, never changed, and the folder is chosen through the system file chooser, so no extra permission is needed</li>
+					<li>A new menu entry, Import from Original Sticky Notes, to do it later</li>
+				</ul>
+			</description>
+		</release>
 		<release version="0.3.0" date="2026-10-12">
 			<description translate="no">
 				<p>First release of Sticky Notes+, a fork of Sticky Notes</p>

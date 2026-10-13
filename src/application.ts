@@ -31,6 +31,10 @@ import Gtk from "gi://Gtk?version=4.0";
 import Gdk from "gi://Gdk?version=4.0";
 
 import { export_images, import_images } from "./images.js";
+import {
+  choose_original_folder,
+  read_original_notes,
+} from "./migration.js";
 import { StickyNotes } from "./notes.js";
 import { show_preferences } from "./preferences.js";
 import { compare_notes_newest_first, INote, Note, settings } from "./util.js";
@@ -202,6 +206,11 @@ export class Application extends Adw.Application {
         settings.set_boolean("show-all-notes", true);
         this.all_notes();
       }
+
+      GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+        this.offer_import_original();
+        return GLib.SOURCE_REMOVE;
+      });
     }
   }
 
@@ -301,6 +310,10 @@ export class Application extends Adw.Application {
     const export_notes = new Gio.SimpleAction({ name: "export" });
     export_notes.connect("activate", () => this.export_notes());
     this.add_action(export_notes);
+
+    const import_original = new Gio.SimpleAction({ name: "import-original" });
+    import_original.connect("activate", () => this.import_original());
+    this.add_action(import_original);
 
     const import_notes = new Gio.SimpleAction({ name: "import" });
     import_notes.connect("activate", () => this.import_notes());
@@ -606,6 +619,70 @@ export class Application extends Adw.Application {
       error_dialog.add_response("ok", _("OK"));
       error_dialog.present();
     }
+  }
+
+  /** Adds the notes of a folder written by the original app, never touching it. */
+  import_notes_from_folder(folder: Gio.File) {
+    const found = read_original_notes(folder);
+    let imported = 0;
+
+    for (const data of found) {
+      if (this.find_note(data.uuid)) continue;
+
+      const note = new Note(data);
+      this.save_on_change(note);
+      this.notes_list.append(note);
+      save_note(note);
+      imported++;
+    }
+
+    this.sort_notes();
+    return { found: found.length, imported };
+  }
+
+  async import_original() {
+    try {
+      const folder = await choose_original_folder(this.active_window);
+      if (!folder) return;
+
+      const { found, imported } = this.import_notes_from_folder(folder);
+      const dialog = new Adw.AlertDialog({
+        heading: imported
+          ? _("Notes imported")
+          : _("Nothing to import"),
+        body: imported
+          ? (_("%d notes imported") as unknown as { format(n: number): string }).format(imported)
+          : _("That folder holds no notes that are not here already."),
+      });
+      dialog.add_response("ok", _("OK"));
+      dialog.present(this.active_window);
+    } catch (err) {
+      if (err instanceof GLib.Error && err.matches(Gio.io_error_quark(), Gio.IOErrorEnum.CANCELLED)) return;
+      console.error("Failed to import the original notes:", err);
+    }
+  }
+
+  /** First start with no notes: offer to bring over those of the original app. */
+  offer_import_original() {
+    if (settings.get_boolean("migration-offered")) return;
+    if (this.notes_list.n_items > 0) return;
+
+    const dialog = new Adw.AlertDialog({
+      heading: _("Import your notes?"),
+      body: _(
+        "If you used the original Sticky Notes, you can bring its notes here. They are only read, never changed.",
+      ),
+    });
+    dialog.add_response("no", _("No Thanks"));
+    dialog.add_response("import", _("Import…"));
+    dialog.set_response_appearance("import", Adw.ResponseAppearance.SUGGESTED);
+    dialog.set_default_response("import");
+    dialog.set_close_response("no");
+    dialog.connect("response", (_dialog, response) => {
+      settings.set_boolean("migration-offered", true);
+      if (response === "import") this.import_original();
+    });
+    dialog.present(this.active_window);
   }
 
   async import_notes() {

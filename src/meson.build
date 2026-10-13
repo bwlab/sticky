@@ -6,6 +6,7 @@ sources = [
   'errors.ts',
   'images.ts',
   'main.ts',
+  'migration.ts',
   'notes.ts',
   'preferences.ts',
   'styleselector.ts',

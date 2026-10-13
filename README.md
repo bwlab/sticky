@@ -28,10 +28,12 @@ flatpak install --user it.bwlab.StickyNotes.flatpak
 ```
 
 The app id is `it.bwlab.StickyNotes`, so it runs next to the original Sticky
-Notes and keeps its own notes. To bring your notes over, copy the `notes` folder
-of the original app (`~/.var/app/com.vixalien.sticky/data/com.vixalien.sticky/notes`)
-into `~/.var/app/it.bwlab.StickyNotes/data/it.bwlab.StickyNotes/` while neither
-app is running, or use *Import Notes…* with a file exported by this app.
+Notes and keeps its own notes. On the first start with no notes it offers to
+import the notes of the original app: pick its notes folder
+(`~/.var/app/com.vixalien.sticky/data/com.vixalien.sticky/notes`) in the file
+chooser. The original notes are only read, never changed. You can do it later
+from the menu, *Import from Original Sticky Notes…*. Notes exported from this
+app can be brought back with *Import Notes…*.
 
 ### GNOME Shell extension (optional)
 
