@@ -37,10 +37,25 @@ app can be brought back with *Import Notes…*.
 
 ### GNOME Shell extension (optional)
 
-Wayland apps cannot stay above other windows or choose where they open, so
-those two features come from a small extension in [`extension/`](extension).
-Copy it to `~/.local/share/gnome-shell/extensions/sticky-notes-extras@bwlab.it`,
-enable it and log out and in again.
+Wayland apps cannot stay above other windows or remember where they open, so
+the **pin** button and the remembered window position come from a small
+extension. Without it the app works, and the pin only records your choice.
+
+Download `sticky-notes-extras@bwlab.it.shell-extension.zip` from the
+[releases](https://github.com/bwlab/sticky/releases) and install it:
+
+```sh
+gnome-extensions install --force sticky-notes-extras@bwlab.it.shell-extension.zip
+```
+
+Log out and in once so that GNOME Shell finds it, then enable it:
+
+```sh
+gnome-extensions enable sticky-notes-extras@bwlab.it
+```
+
+A pinned note stays above other windows and follows you across workspaces.
+The source is in [`extension/`](extension).
 
 The tray icon needs a host for status notifier items, such as the
 *AppIndicator and KStatusNotifierItem Support* extension on GNOME.

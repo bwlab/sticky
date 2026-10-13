@@ -54,6 +54,13 @@
 		<control>tablet</control>
 	</recommends>
 	<releases>
+		<release version="0.3.3" date="2026-10-13">
+			<description translate="no">
+				<ul>
+					<li>The GNOME Shell extension for the pin button and the remembered window position is now a ready-to-install zip attached to each release, with install steps in the README</li>
+				</ul>
+			</description>
+		</release>
 		<release version="0.3.2" date="2026-10-13">
 			<description translate="no">
 				<ul>
