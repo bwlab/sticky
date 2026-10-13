@@ -90,10 +90,16 @@ export default class StickyNotesExtras extends Extension {
     if (above === window.is_above()) return;
 
     console.log(`[sticky-notes-extras] ${above ? "raising" : "lowering"} ${window.get_title()}`);
-    if (above) window.make_above();
-    else window.unmake_above();
+    // a pinned note stays in view whichever workspace you are on
+    if (above) {
+      window.make_above();
+      window.stick();
+    } else {
+      window.unmake_above();
+      window.unstick();
+    }
     entry.raised = above;
-    console.log(`[sticky-notes-extras] ${window.get_title()} is_above=${window.is_above()}`);
+    console.log(`[sticky-notes-extras] ${window.get_title()} is_above=${window.is_above()} on_all_workspaces=${window.is_on_all_workspaces()}`);
   }
 
   // moves the window back to where the note was last seen, once. This has to
@@ -167,7 +173,10 @@ export default class StickyNotesExtras extends Extension {
     if (entry.report_source) GLib.source_remove(entry.report_source);
 
     // give the window back the way it was found
-    if (entry.raised) window.unmake_above();
+    if (entry.raised) {
+      window.unmake_above();
+      window.unstick();
+    }
 
     entry.ids.forEach((id) => window.disconnect(id));
     entry.groupIds.forEach((id) => entry.group.disconnect(id));

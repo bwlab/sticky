@@ -37,7 +37,7 @@
               <object class="GtkToggleButton" id="pin_button">
                 <property name="icon-name">view-pin-symbolic</property>
                 <property name="action-name">win.keep-above</property>
-                <property name="tooltip-text" translatable="yes">Always on Top</property>
+                <property name="tooltip-text" translatable="yes">Keep on Top (on all workspaces)</property>
               </object>
             </child>
             <property name="title-widget">
