@@ -1,21 +1,18 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-data/it.bwlab.StickyNotes.desktop.in.in
+app/src/application.rs
+app/src/note_object.rs
+app/src/note_window.rs
+app/src/preferences.rs
+app/src/style_selector.rs
+app/src/tray.rs
+app/src/util.rs
+app/src/view.rs
 data/it.bwlab.StickyNotes.appdata.xml.in.in
+data/it.bwlab.StickyNotes.desktop.in.in
 data/it.bwlab.StickyNotes.gschema.xml.in
 data/ui/card.ui
 data/ui/help-overlay.ui
 data/ui/notes.ui
 data/ui/theme-selector.ui
 data/ui/window.ui
-src/application.ts
-src/card.ts
-src/main.ts
-src/migration.ts
-src/notes.ts
-src/preferences.ts
-src/styleselector.ts
-src/trayicon.ts
-src/util.ts
-src/view.ts
-src/window.ts

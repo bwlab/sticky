@@ -62,29 +62,3 @@ if compile_schemas.found()
 endif
 
 subdir('icons')
-
-# local_schemas = configure_file(
-#   copy: true,
-#   input: gsettings_schema,
-#   output: gsettings_schema.full_path()
-# )
-
-compile_local_schemas = custom_target(
-  'compile_local_schemas',
-  input: gsettings_schema,
-  output: 'gschemas.compiled',
-  command: [compile_schemas, meson.current_build_dir()]
-)
-
-pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
-
-subdir('stylus')
-
-data_res = gnome.compile_resources(
-  application_id + '.data',
-  'com.vixalien.sticky.data.gresource.xml',
-  dependencies: stylus,
-  gresource_bundle: true,
-  install: true,
-  install_dir: pkgdatadir,
-)

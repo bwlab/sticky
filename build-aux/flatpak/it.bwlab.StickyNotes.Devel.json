@@ -4,13 +4,17 @@
   "runtime-version": "50",
   "sdk": "org.gnome.Sdk",
   "sdk-extensions": [
-    "org.freedesktop.Sdk.Extension.node20"
+    "org.freedesktop.Sdk.Extension.rust-stable"
   ],
   "tags": [
     "devel"
   ],
   "build-options": {
-    "append-path": "/usr/lib/sdk/node20/bin"
+    "append-path": "/usr/lib/sdk/rust-stable/bin",
+    "env": {
+      "CARGO_HOME": "/run/build/sticky-notes/cargo",
+      "CARGO_NET_OFFLINE": "true"
+    }
   },
   "command": "it.bwlab.StickyNotes",
   "finish-args": [
@@ -18,8 +22,7 @@
     "--device=dri",
     "--socket=wayland",
     "--socket=fallback-x11",
-    "--talk-name=org.kde.StatusNotifierWatcher",
-    "--env=GJS_DISABLE_JIT=1"
+    "--talk-name=org.kde.StatusNotifierWatcher"
   ],
   "cleanup": [
     "/include",
@@ -30,28 +33,13 @@
     "/share/man",
     "/share/pkgconfig",
     "*.la",
-    "*.a",
-    "/yarn-mirror"
+    "*.a"
   ],
   "modules": [
-    {
-      "name": "yarn-deps",
-      "buildsystem": "simple",
-      "build-commands": [
-        "/usr/lib/sdk/node20/enable.sh",
-        "mkdir -p /app",
-        "cp -r $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror/ /app",
-        "echo $'yarn-offline-mirror \"/app/yarn-mirror\"' > /app/.yarnrc"
-      ],
-      "sources": [
-        "generated-sources.json"
-      ]
-    },
     {
       "name": "sticky-notes",
       "buildsystem": "meson",
       "config-opts": [
-        "-Dyarnrc=/app/.yarnrc",
         "-Dprofile=development"
       ],
       "sources": [
@@ -59,12 +47,9 @@
           "type": "git",
           "url": "../..",
           "branch": "HEAD"
-        }
+        },
+        "cargo-sources.json"
       ]
     }
-  ],
-  "rename-desktop-file": "it.bwlab.StickyNotes.desktop",
-  "rename-appdata-file": "it.bwlab.StickyNotes.appdata.xml",
-  "rename-icon": "it.bwlab.StickyNotes",
-  "desktop-file-name-prefix": "(Devel) "
+  ]
 }

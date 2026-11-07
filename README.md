@@ -6,7 +6,7 @@
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
 
 Sticky Notes+ is a note taking application for the GNOME desktop, with images,
-twenty colors, checklists and a tray icon. It is written in GJS and uses GTK4.
+twenty colors, checklists and a tray icon. It is written in Rust and uses GTK4 and libadwaita.
 
 It is a fork of [Sticky Notes](https://github.com/vixalien/sticky) by Angelo
 Verlain and Christopher Davis, and keeps its MIT license.
@@ -62,14 +62,17 @@ The tray icon needs a host for status notifier items, such as the
 
 ### From source
 
-To install from source, you need `nodejs` and `yarn` installed. Then, you need
-to clone the repository by being careful to also pull in the submodules:
+To install from source, clone the repository:
 
 ```sh
-git clone https://github.com/bwlab/sticky.git --recurse-submodules
+git clone https://github.com/bwlab/sticky.git
 ```
 
-Open the project in GNOME Builder and click "Run Project".
+Open the project in GNOME Builder and click "Run Project". It is built with
+Rust and meson; the `rust-stable` SDK extension of Flatpak provides the
+compiler. The Flatpak manifests are in `build-aux/flatpak`. After changing
+`Cargo.lock`, regenerate `cargo-sources.json` with
+[flatpak-cargo-generator](https://github.com/flatpak/flatpak-builder-tools/tree/master/cargo).
 
 > Note: Other non-Flatpak environments are no longer supported. This is because
 Sticky Notes uses an upcoming version of libadwaita.

@@ -1,0 +1,607 @@
+.notes-window .notes-box {
+  border-spacing: 6px;
+}
+.notes-window .notes-box row {
+  border-radius: 2px;
+}
+.notes-window .notes {
+  padding: 0 6px 6px 6px;
+}
+.notes-window .note-view {
+  padding: 12px;
+}
+.notes-window .search-bar {
+  padding: 0 3px 12px;
+}
+.notes-window listview > row {
+  background-color: inherit;
+}
+.notes-window .card-text-view {
+  background-color: transparent;
+  color: inherit;
+}
+.note-card {
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.18), 0 5px 8px -5px rgba(0,0,0,0.3);
+}
+.note-card.style-yellow {
+  background-color: #fff6cb;
+  color: #000;
+}
+.note-card.style-yellow selection:focus-within {
+  background-color: alpha(#000, 0.3);
+}
+.note-card.style-pink {
+  background-color: #ffe3f1;
+  color: #000;
+}
+.note-card.style-pink selection:focus-within {
+  background-color: alpha(#007041, 0.3);
+}
+.note-card.style-green {
+  background-color: #e7f6e4;
+  color: #000;
+}
+.note-card.style-green selection:focus-within {
+  background-color: alpha(#8907c8, 0.3);
+}
+.note-card.style-purple {
+  background-color: #f2e5ff;
+  color: #000;
+}
+.note-card.style-purple selection:focus-within {
+  background-color: alpha(#016681, 0.3);
+}
+.note-card.style-blue {
+  background-color: #e7f3ff;
+  color: #000;
+}
+.note-card.style-blue selection:focus-within {
+  background-color: alpha(#f14e00, 0.3);
+}
+.note-card.style-gray {
+  background-color: #edebe9;
+  color: #000;
+}
+.note-card.style-gray selection:focus-within {
+  background-color: alpha(#302821, 0.3);
+}
+.note-card.style-charcoal {
+  background-color: #5e5e5e;
+  color: #fff;
+}
+.note-card.style-charcoal selection:focus-within {
+  background-color: alpha(#fff, 0.3);
+}
+.note-card.style-orange {
+  background-color: #ffe3c2;
+  color: #000;
+}
+.note-card.style-orange selection:focus-within {
+  background-color: alpha(#074288, 0.3);
+}
+.note-card.style-peach {
+  background-color: #ffe8df;
+  color: #000;
+}
+.note-card.style-peach selection:focus-within {
+  background-color: alpha(#076588, 0.3);
+}
+.note-card.style-coral {
+  background-color: #ffd9d6;
+  color: #000;
+}
+.note-card.style-coral selection:focus-within {
+  background-color: alpha(#077e88, 0.3);
+}
+.note-card.style-red {
+  background-color: #ffc9c9;
+  color: #000;
+}
+.note-card.style-red selection:focus-within {
+  background-color: alpha(#078882, 0.3);
+}
+.note-card.style-rose {
+  background-color: #ffc2e0;
+  color: #000;
+}
+.note-card.style-rose selection:focus-within {
+  background-color: alpha(#078842, 0.3);
+}
+.note-card.style-lavender {
+  background-color: #e8e4ff;
+  color: #000;
+}
+.note-card.style-lavender selection:focus-within {
+  background-color: alpha(#708807, 0.3);
+}
+.note-card.style-indigo {
+  background-color: #cfd8ff;
+  color: #000;
+}
+.note-card.style-indigo selection:focus-within {
+  background-color: alpha(#887407, 0.3);
+}
+.note-card.style-cyan {
+  background-color: #cdf3f9;
+  color: #000;
+}
+.note-card.style-cyan selection:focus-within {
+  background-color: alpha(#881607, 0.3);
+}
+.note-card.style-aqua {
+  background-color: #c4f3ea;
+  color: #000;
+}
+.note-card.style-aqua selection:focus-within {
+  background-color: alpha(#88071d, 0.3);
+}
+.note-card.style-mint {
+  background-color: #d9f6df;
+  color: #000;
+}
+.note-card.style-mint selection:focus-within {
+  background-color: alpha(#88075d, 0.3);
+}
+.note-card.style-lime {
+  background-color: #f0f8c4;
+  color: #000;
+}
+.note-card.style-lime selection:focus-within {
+  background-color: alpha(#280788, 0.3);
+}
+.note-card.style-sand {
+  background-color: #f1e6d0;
+  color: #000;
+}
+.note-card.style-sand selection:focus-within {
+  background-color: alpha(#073288, 0.3);
+}
+.note-card.style-window {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+}
+.note-card.style-window selection:focus-within {
+  background-color: alpha(@window_fg_color, 0.3);
+}
+@define-color link_color_yellow #3f00ff;
+@define-color link_color_pink #3f00ff;
+@define-color link_color_green #3f00ff;
+@define-color link_color_purple #3f00ff;
+@define-color link_color_blue #3f00ff;
+@define-color link_color_gray #3f00ff;
+@define-color link_color_charcoal #b4faff;
+@define-color link_color_orange #3f00ff;
+@define-color link_color_peach #3f00ff;
+@define-color link_color_coral #3f00ff;
+@define-color link_color_red #3f00ff;
+@define-color link_color_rose #3f00ff;
+@define-color link_color_lavender #3f00ff;
+@define-color link_color_indigo #3f00ff;
+@define-color link_color_cyan #3f00ff;
+@define-color link_color_aqua #3f00ff;
+@define-color link_color_mint #3f00ff;
+@define-color link_color_lime #3f00ff;
+@define-color link_color_sand #3f00ff;
+@define-color link_color_window @accent_bg_color;
+.text-view {
+  background-color: transparent;
+  color: inherit;
+}
+.text-view.font-size-10 {
+  font-size: 10pt;
+}
+.text-view.font-size-12 {
+  font-size: 12pt;
+}
+.text-view.font-size-14 {
+  font-size: 14pt;
+}
+.text-view.font-size-16 {
+  font-size: 16pt;
+}
+window.sticky-note,
+window.sticky-note.csd {
+  border-radius: 2px;
+}
+window.sticky-note.csd:not(.maximized):not(.fullscreen):not(.tiled) {
+  box-shadow: 0 3px 6px 0 rgba(0,0,0,0.45), 0 14px 32px 6px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.3);
+}
+toolbarview.note-window {
+  border-radius: 2px;
+}
+toolbarview.note-window .top-bar headerbar {
+  min-height: 30px;
+}
+toolbarview.note-window .top-bar headerbar > windowhandle > box {
+  min-height: 30px;
+}
+toolbarview.note-window .top-bar headerbar button {
+  min-height: 22px;
+  min-width: 22px;
+  padding: 0 4px;
+}
+toolbarview.note-window .text-view {
+  background-image: linear-gradient(155deg, rgba(255,255,255,0) 60%, rgba(0,0,0,0.06) 100%);
+}
+toolbarview.note-window .text-view,
+toolbarview.note-window .bottom-bar,
+toolbarview.note-window popover > arrow,
+toolbarview.note-window popover > contents,
+toolbarview.note-window .top-bar {
+  transition: background-color 0.35s, color 0.25s;
+}
+toolbarview.note-window:not(:focus-within) > .top-bar,
+toolbarview.note-window:not(:focus-within) > .bottom-bar {
+  transition: 0.25s opacity ease-out;
+  opacity: 0;
+}
+toolbarview.note-window:not(:focus-within) > .top-bar:hover,
+toolbarview.note-window:not(:focus-within) > .bottom-bar:hover {
+  opacity: 1;
+  transition: 0.25s opacity ease-in;
+}
+toolbarview.note-window > .top-bar:backdrop > windowhandle,
+toolbarview.note-window > .bottom-bar:backdrop > windowhandle {
+  filter: opacity(1);
+}
+toolbarview.note-window.style-yellow .text-view,
+toolbarview.note-window.style-yellow .bottom-bar,
+toolbarview.note-window.style-yellow popover > arrow,
+toolbarview.note-window.style-yellow popover > contents {
+  color: #000;
+  background-color: #fff6cb;
+}
+toolbarview.note-window.style-yellow .top-bar {
+  color: #000;
+  background-color: #ffee92;
+}
+toolbarview.note-window.style-yellow .note-title text {
+  color: #000;
+  background-color: #fff6cb;
+}
+toolbarview.note-window.style-yellow .note-title text selection:focus-within {
+  background-color: alpha(#000, 0.3);
+}
+toolbarview.note-window.style-pink .text-view,
+toolbarview.note-window.style-pink .bottom-bar,
+toolbarview.note-window.style-pink popover > arrow,
+toolbarview.note-window.style-pink popover > contents {
+  color: #000;
+  background-color: #ffe3f1;
+}
+toolbarview.note-window.style-pink .top-bar {
+  color: #000;
+  background-color: #ffc5e1;
+}
+toolbarview.note-window.style-pink .note-title text {
+  color: #000;
+  background-color: #ffe3f1;
+}
+toolbarview.note-window.style-pink .note-title text selection:focus-within {
+  background-color: alpha(#007041, 0.3);
+}
+toolbarview.note-window.style-green .text-view,
+toolbarview.note-window.style-green .bottom-bar,
+toolbarview.note-window.style-green popover > arrow,
+toolbarview.note-window.style-green popover > contents {
+  color: #000;
+  background-color: #e7f6e4;
+}
+toolbarview.note-window.style-green .top-bar {
+  color: #000;
+  background-color: #d1ebcb;
+}
+toolbarview.note-window.style-green .note-title text {
+  color: #000;
+  background-color: #e7f6e4;
+}
+toolbarview.note-window.style-green .note-title text selection:focus-within {
+  background-color: alpha(#8907c8, 0.3);
+}
+toolbarview.note-window.style-purple .text-view,
+toolbarview.note-window.style-purple .bottom-bar,
+toolbarview.note-window.style-purple popover > arrow,
+toolbarview.note-window.style-purple popover > contents {
+  color: #000;
+  background-color: #f2e5ff;
+}
+toolbarview.note-window.style-purple .top-bar {
+  color: #000;
+  background-color: #e2d0f5;
+}
+toolbarview.note-window.style-purple .note-title text {
+  color: #000;
+  background-color: #f2e5ff;
+}
+toolbarview.note-window.style-purple .note-title text selection:focus-within {
+  background-color: alpha(#016681, 0.3);
+}
+toolbarview.note-window.style-blue .text-view,
+toolbarview.note-window.style-blue .bottom-bar,
+toolbarview.note-window.style-blue popover > arrow,
+toolbarview.note-window.style-blue popover > contents {
+  color: #000;
+  background-color: #e7f3ff;
+}
+toolbarview.note-window.style-blue .top-bar {
+  color: #000;
+  background-color: #cce7ff;
+}
+toolbarview.note-window.style-blue .note-title text {
+  color: #000;
+  background-color: #e7f3ff;
+}
+toolbarview.note-window.style-blue .note-title text selection:focus-within {
+  background-color: alpha(#f14e00, 0.3);
+}
+toolbarview.note-window.style-gray .text-view,
+toolbarview.note-window.style-gray .bottom-bar,
+toolbarview.note-window.style-gray popover > arrow,
+toolbarview.note-window.style-gray popover > contents {
+  color: #000;
+  background-color: #edebe9;
+}
+toolbarview.note-window.style-gray .top-bar {
+  color: #000;
+  background-color: #dddad8;
+}
+toolbarview.note-window.style-gray .note-title text {
+  color: #000;
+  background-color: #edebe9;
+}
+toolbarview.note-window.style-gray .note-title text selection:focus-within {
+  background-color: alpha(#302821, 0.3);
+}
+toolbarview.note-window.style-charcoal .text-view,
+toolbarview.note-window.style-charcoal .bottom-bar,
+toolbarview.note-window.style-charcoal popover > arrow,
+toolbarview.note-window.style-charcoal popover > contents {
+  color: #fff;
+  background-color: #5e5e5e;
+}
+toolbarview.note-window.style-charcoal .top-bar {
+  color: #fff;
+  background-color: #3f3d3c;
+}
+toolbarview.note-window.style-charcoal .note-title text {
+  color: #fff;
+  background-color: #5e5e5e;
+}
+toolbarview.note-window.style-charcoal .note-title text selection:focus-within {
+  background-color: alpha(#fff, 0.3);
+}
+toolbarview.note-window.style-orange .text-view,
+toolbarview.note-window.style-orange .bottom-bar,
+toolbarview.note-window.style-orange popover > arrow,
+toolbarview.note-window.style-orange popover > contents {
+  color: #000;
+  background-color: #ffe3c2;
+}
+toolbarview.note-window.style-orange .top-bar {
+  color: #000;
+  background-color: #ffcf9a;
+}
+toolbarview.note-window.style-orange .note-title text {
+  color: #000;
+  background-color: #ffe3c2;
+}
+toolbarview.note-window.style-orange .note-title text selection:focus-within {
+  background-color: alpha(#074288, 0.3);
+}
+toolbarview.note-window.style-peach .text-view,
+toolbarview.note-window.style-peach .bottom-bar,
+toolbarview.note-window.style-peach popover > arrow,
+toolbarview.note-window.style-peach popover > contents {
+  color: #000;
+  background-color: #ffe8df;
+}
+toolbarview.note-window.style-peach .top-bar {
+  color: #000;
+  background-color: #ffd2c0;
+}
+toolbarview.note-window.style-peach .note-title text {
+  color: #000;
+  background-color: #ffe8df;
+}
+toolbarview.note-window.style-peach .note-title text selection:focus-within {
+  background-color: alpha(#076588, 0.3);
+}
+toolbarview.note-window.style-coral .text-view,
+toolbarview.note-window.style-coral .bottom-bar,
+toolbarview.note-window.style-coral popover > arrow,
+toolbarview.note-window.style-coral popover > contents {
+  color: #000;
+  background-color: #ffd9d6;
+}
+toolbarview.note-window.style-coral .top-bar {
+  color: #000;
+  background-color: #ffc0ba;
+}
+toolbarview.note-window.style-coral .note-title text {
+  color: #000;
+  background-color: #ffd9d6;
+}
+toolbarview.note-window.style-coral .note-title text selection:focus-within {
+  background-color: alpha(#077e88, 0.3);
+}
+toolbarview.note-window.style-red .text-view,
+toolbarview.note-window.style-red .bottom-bar,
+toolbarview.note-window.style-red popover > arrow,
+toolbarview.note-window.style-red popover > contents {
+  color: #000;
+  background-color: #ffc9c9;
+}
+toolbarview.note-window.style-red .top-bar {
+  color: #000;
+  background-color: #ffadad;
+}
+toolbarview.note-window.style-red .note-title text {
+  color: #000;
+  background-color: #ffc9c9;
+}
+toolbarview.note-window.style-red .note-title text selection:focus-within {
+  background-color: alpha(#078882, 0.3);
+}
+toolbarview.note-window.style-rose .text-view,
+toolbarview.note-window.style-rose .bottom-bar,
+toolbarview.note-window.style-rose popover > arrow,
+toolbarview.note-window.style-rose popover > contents {
+  color: #000;
+  background-color: #ffc2e0;
+}
+toolbarview.note-window.style-rose .top-bar {
+  color: #000;
+  background-color: #ffa3d1;
+}
+toolbarview.note-window.style-rose .note-title text {
+  color: #000;
+  background-color: #ffc2e0;
+}
+toolbarview.note-window.style-rose .note-title text selection:focus-within {
+  background-color: alpha(#078842, 0.3);
+}
+toolbarview.note-window.style-lavender .text-view,
+toolbarview.note-window.style-lavender .bottom-bar,
+toolbarview.note-window.style-lavender popover > arrow,
+toolbarview.note-window.style-lavender popover > contents {
+  color: #000;
+  background-color: #e8e4ff;
+}
+toolbarview.note-window.style-lavender .top-bar {
+  color: #000;
+  background-color: #d4cdff;
+}
+toolbarview.note-window.style-lavender .note-title text {
+  color: #000;
+  background-color: #e8e4ff;
+}
+toolbarview.note-window.style-lavender .note-title text selection:focus-within {
+  background-color: alpha(#708807, 0.3);
+}
+toolbarview.note-window.style-indigo .text-view,
+toolbarview.note-window.style-indigo .bottom-bar,
+toolbarview.note-window.style-indigo popover > arrow,
+toolbarview.note-window.style-indigo popover > contents {
+  color: #000;
+  background-color: #cfd8ff;
+}
+toolbarview.note-window.style-indigo .top-bar {
+  color: #000;
+  background-color: #b4c2ff;
+}
+toolbarview.note-window.style-indigo .note-title text {
+  color: #000;
+  background-color: #cfd8ff;
+}
+toolbarview.note-window.style-indigo .note-title text selection:focus-within {
+  background-color: alpha(#887407, 0.3);
+}
+toolbarview.note-window.style-cyan .text-view,
+toolbarview.note-window.style-cyan .bottom-bar,
+toolbarview.note-window.style-cyan popover > arrow,
+toolbarview.note-window.style-cyan popover > contents {
+  color: #000;
+  background-color: #cdf3f9;
+}
+toolbarview.note-window.style-cyan .top-bar {
+  color: #000;
+  background-color: #aee8f2;
+}
+toolbarview.note-window.style-cyan .note-title text {
+  color: #000;
+  background-color: #cdf3f9;
+}
+toolbarview.note-window.style-cyan .note-title text selection:focus-within {
+  background-color: alpha(#881607, 0.3);
+}
+toolbarview.note-window.style-aqua .text-view,
+toolbarview.note-window.style-aqua .bottom-bar,
+toolbarview.note-window.style-aqua popover > arrow,
+toolbarview.note-window.style-aqua popover > contents {
+  color: #000;
+  background-color: #c4f3ea;
+}
+toolbarview.note-window.style-aqua .top-bar {
+  color: #000;
+  background-color: #9ee8dc;
+}
+toolbarview.note-window.style-aqua .note-title text {
+  color: #000;
+  background-color: #c4f3ea;
+}
+toolbarview.note-window.style-aqua .note-title text selection:focus-within {
+  background-color: alpha(#88071d, 0.3);
+}
+toolbarview.note-window.style-mint .text-view,
+toolbarview.note-window.style-mint .bottom-bar,
+toolbarview.note-window.style-mint popover > arrow,
+toolbarview.note-window.style-mint popover > contents {
+  color: #000;
+  background-color: #d9f6df;
+}
+toolbarview.note-window.style-mint .top-bar {
+  color: #000;
+  background-color: #bdeccb;
+}
+toolbarview.note-window.style-mint .note-title text {
+  color: #000;
+  background-color: #d9f6df;
+}
+toolbarview.note-window.style-mint .note-title text selection:focus-within {
+  background-color: alpha(#88075d, 0.3);
+}
+toolbarview.note-window.style-lime .text-view,
+toolbarview.note-window.style-lime .bottom-bar,
+toolbarview.note-window.style-lime popover > arrow,
+toolbarview.note-window.style-lime popover > contents {
+  color: #000;
+  background-color: #f0f8c4;
+}
+toolbarview.note-window.style-lime .top-bar {
+  color: #000;
+  background-color: #e3f299;
+}
+toolbarview.note-window.style-lime .note-title text {
+  color: #000;
+  background-color: #f0f8c4;
+}
+toolbarview.note-window.style-lime .note-title text selection:focus-within {
+  background-color: alpha(#280788, 0.3);
+}
+toolbarview.note-window.style-sand .text-view,
+toolbarview.note-window.style-sand .bottom-bar,
+toolbarview.note-window.style-sand popover > arrow,
+toolbarview.note-window.style-sand popover > contents {
+  color: #000;
+  background-color: #f1e6d0;
+}
+toolbarview.note-window.style-sand .top-bar {
+  color: #000;
+  background-color: #e6d5b3;
+}
+toolbarview.note-window.style-sand .note-title text {
+  color: #000;
+  background-color: #f1e6d0;
+}
+toolbarview.note-window.style-sand .note-title text selection:focus-within {
+  background-color: alpha(#073288, 0.3);
+}
+toolbarview.note-window.style-window .text-view,
+toolbarview.note-window.style-window .bottom-bar,
+toolbarview.note-window.style-window popover > arrow,
+toolbarview.note-window.style-window popover > contents {
+  color: @window_fg_color;
+  background-color: @window_bg_color;
+}
+toolbarview.note-window.style-window .top-bar {
+  color: @window_fg_color;
+  background-color: @headerbar_bg_color;
+}
+toolbarview.note-window.style-window .note-title text {
+  color: @window_fg_color;
+  background-color: @window_bg_color;
+}
+toolbarview.note-window.style-window .note-title text selection:focus-within {
+  background-color: alpha(@window_fg_color, 0.3);
+}

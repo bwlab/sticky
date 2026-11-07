@@ -1,4 +1,4 @@
-project('sticky-notes',
+project('sticky-notes', 'rust',
           version: '0.3.3',
     meson_version: '>= 0.62.0',
   default_options: [ 'warning_level=2', 'werror=false', ],
@@ -10,53 +10,32 @@ GETTEXT_PACKAGE = application_id
 i18n = import('i18n')
 gnome = import('gnome')
 
-gjs_dep = dependency('gjs-1.0', version: '>= 1.54.0')
-gjs_console = gjs_dep.get_variable(pkgconfig: 'gjs_console')
+cargo = find_program('cargo')
 
-pm_name = 'yarn'
+# A development build gets an id of its own, so it runs next to the stable one.
+development = get_option('profile') == 'development'
+app_id = development ? application_id + '.Devel' : application_id
 
-package_manager = find_program(pm_name, '/usr/local/bin/yarn', required: true)
-
-package_manager_args = ['--cwd', meson.project_source_root()]
-
-yarnrc = get_option('yarnrc')
-
-if pm_name == 'yarn' and yarnrc != ''
-  # configure_file(input: 'empty_file',
-  #   output: meson.current_source_dir() / '.yarnrc',
-  #   capture: true,
-  #   command: [
-  #     '/bin/echo',
-  #     'yarn-offline-mirror ' + offline_mirror
-  #   ])
-
-  # run_command(
-  #   package_manager,
-  #   'config',
-  #   '--offline',
-  #   'set',
-  #   'yarn-offline-mirror',
-  #   offline_mirror,
-  #   env: { 'HOME': meson.current_source_dir() },
-  #   check: true
-  # )
-
-  package_manager_args += [
-    # note that this does not affect network requests, as it's getting them from
-    # the offline mirror
-    '--offline',
-    '--use-yarnrc', yarnrc
-  ]
-endif
-
-package_manager_deps = custom_target(
-  'node-package-manager-deps',
-  command: [ package_manager, 'install', package_manager_args ],
-  output: ['node-package-manager-out']
+cargo_build = custom_target(
+  'cargo-build',
+  build_by_default: true,
+  build_always_stale: true,
+  console: true,
+  output: application_id,
+  install: true,
+  install_dir: get_option('bindir'),
+  command: [
+    meson.project_source_root() / 'build-aux/cargo-build.sh',
+    meson.project_source_root(),
+    meson.project_build_root() / 'target',
+    development ? 'debug' : 'release',
+    '@OUTPUT@',
+    app_id,
+    get_option('prefix') / get_option('localedir'),
+  ],
 )
 
 subdir('data')
-subdir('src')
 subdir('po')
 
 gnome.post_install(
