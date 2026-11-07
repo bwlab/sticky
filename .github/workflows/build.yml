@@ -36,8 +36,9 @@ jobs:
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: it.bwlab.StickyNotes.flatpak
-          repository-name: gnome-nightly
-          repository-url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
+          # GNOME 50 is a stable runtime: it lives on Flathub, not in the nightly repo
+          repository-name: flathub
+          repository-url: https://dl.flathub.org/repo/flathub.flatpakrepo
           manifest-path: build-aux/flatpak/it.bwlab.StickyNotes.json
           cache-key: flatpak-builder-${{ github.sha }}
           arch: ${{ matrix.arch }}
