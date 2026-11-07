@@ -7,7 +7,3 @@ option(
         ],
         value: 'default'
 )
-option(
-        'yarnrc',
-        type: 'string'
-)

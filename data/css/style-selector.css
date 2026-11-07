@@ -1,0 +1,119 @@
+.style-selector-box > * {
+  border-radius: 99px;
+}
+styleselector {
+  margin: 9px;
+}
+styleselector checkbutton {
+  padding: 0;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 1px;
+  background-clip: content-box;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px @borders;
+}
+styleselector checkbutton:checked {
+  box-shadow: inset 0 0 0 2px @accent_bg_color;
+}
+styleselector checkbutton:focus-within {
+  box-shadow: inset 0 0 0 2px @accent_bg_color, 0 0 0 2px @borders;
+  outline-color: transparent;
+}
+styleselector checkbutton.style-yellow {
+  background-color: #ffee92;
+  color: #000;
+}
+styleselector checkbutton.style-pink {
+  background-color: #ffc5e1;
+  color: #000;
+}
+styleselector checkbutton.style-green {
+  background-color: #d1ebcb;
+  color: #000;
+}
+styleselector checkbutton.style-purple {
+  background-color: #e2d0f5;
+  color: #000;
+}
+styleselector checkbutton.style-blue {
+  background-color: #cce7ff;
+  color: #000;
+}
+styleselector checkbutton.style-gray {
+  background-color: #dddad8;
+  color: #000;
+}
+styleselector checkbutton.style-charcoal {
+  background-color: #3f3d3c;
+  color: #fff;
+}
+styleselector checkbutton.style-orange {
+  background-color: #ffcf9a;
+  color: #000;
+}
+styleselector checkbutton.style-peach {
+  background-color: #ffd2c0;
+  color: #000;
+}
+styleselector checkbutton.style-coral {
+  background-color: #ffc0ba;
+  color: #000;
+}
+styleselector checkbutton.style-red {
+  background-color: #ffadad;
+  color: #000;
+}
+styleselector checkbutton.style-rose {
+  background-color: #ffa3d1;
+  color: #000;
+}
+styleselector checkbutton.style-lavender {
+  background-color: #d4cdff;
+  color: #000;
+}
+styleselector checkbutton.style-indigo {
+  background-color: #b4c2ff;
+  color: #000;
+}
+styleselector checkbutton.style-cyan {
+  background-color: #aee8f2;
+  color: #000;
+}
+styleselector checkbutton.style-aqua {
+  background-color: #9ee8dc;
+  color: #000;
+}
+styleselector checkbutton.style-mint {
+  background-color: #bdeccb;
+  color: #000;
+}
+styleselector checkbutton.style-lime {
+  background-color: #e3f299;
+  color: #000;
+}
+styleselector checkbutton.style-sand {
+  background-color: #e6d5b3;
+  color: #000;
+}
+styleselector checkbutton.style-window {
+  background-color: @headerbar_bg_color;
+  color: @window_fg_color;
+}
+styleselector checkbutton radio {
+  -gtk-icon-source: none;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: @accent_fg_color;
+  min-width: 12px;
+  min-height: 12px;
+  transform: translate(27px, 14px);
+  padding: 2px;
+}
+styleselector checkbutton radio:checked {
+  -gtk-icon-source: -gtk-icontheme('object-select-symbolic');
+  border: 2px solid @accent_bg_color;
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
+}

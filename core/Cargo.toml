@@ -1,0 +1,18 @@
+[package]
+name = "sticky-core"
+version = "0.3.3"
+edition = "2021"
+license = "MIT"
+description = "Note model, storage, images and import/export of Sticky Notes+"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"] }
+uuid = { version = "1", features = ["v4"] }
+sha2 = "0.10"
+base64 = "0.22"
+linkify = "0.10"
+
+[dev-dependencies]
+tempfile = "3"
