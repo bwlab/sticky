@@ -2,6 +2,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
     branches: [main]
 
@@ -40,3 +41,39 @@ jobs:
           manifest-path: build-aux/flatpak/it.bwlab.StickyNotes.json
           cache-key: flatpak-builder-${{ github.sha }}
           arch: ${{ matrix.arch }}
+
+  # a tag like v0.4.0 publishes the bundles and the Shell extension as a release
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: flatpak
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*.flatpak*'
+          path: bundles
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          # the notes are the ones of this version in the appstream file
+          notes=$(python3 - "$version" <<'PY'
+          import re, sys
+          xml = open("data/it.bwlab.StickyNotes.appdata.xml.in.in").read()
+          m = re.search(r'<release version="%s".*?</release>' % re.escape(sys.argv[1]), xml, re.S)
+          print("\n".join("- " + i.strip() for i in re.findall(r"<li>(.*?)</li>", m.group(0))) if m else "")
+          PY
+          )
+          (cd extension && zip -q ../sticky-notes-extras@bwlab.it.shell-extension.zip extension.js metadata.json)
+          # the x86_64 bundle keeps the plain name the README points to
+          for f in bundles/*/*.flatpak; do
+            case "$(basename "$(dirname "$f")")" in
+              *aarch64*) cp "$f" it.bwlab.StickyNotes-aarch64.flatpak ;;
+              *) cp "$f" it.bwlab.StickyNotes.flatpak ;;
+            esac
+          done
+          gh release create "$GITHUB_REF_NAME" --title "Sticky Notes+ $version" --notes "$notes" ./*.flatpak ./*.zip

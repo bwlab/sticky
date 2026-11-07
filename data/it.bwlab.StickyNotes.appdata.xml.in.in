@@ -54,6 +54,17 @@
 		<control>tablet</control>
 	</recommends>
 	<releases>
+		<release version="0.4.0" date="2026-11-07">
+			<description translate="no">
+				<ul>
+					<li>The app is rewritten in Rust, with the same look and features</li>
+					<li>Notes, images and settings from 0.3.x are read as they are</li>
+					<li>The tray icon menu lists the notes, creates a new one and quits the app</li>
+					<li>Notes are written to disk when typing pauses, not on every key</li>
+					<li>Importing a damaged file no longer crashes the app</li>
+				</ul>
+			</description>
+		</release>
 		<release version="0.3.3" date="2026-10-13">
 			<description translate="no">
 				<ul>
