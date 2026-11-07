@@ -12,6 +12,7 @@ use gettextrs::gettext;
 use gtk::{gdk, glib, pango};
 use gtk::glib::translate::IntoGlib;
 use gtk::glib::clone;
+use sticky_core::lists::{continue_list, ListAction};
 use sticky_core::{links, NoteImage, Tag, IMAGE_PLACEHOLDER};
 
 use crate::images::{
@@ -382,10 +383,6 @@ impl NoteBuffer {
                     }
                 }
                 nb.check_link_selected();
-
-                if nb.inner.editable {
-                    nb.sync_tags_to_note();
-                }
             }
         ));
 
@@ -822,6 +819,8 @@ impl NoteBuffer {
         self.update_links();
         self.update_markers();
         self.sync_images();
+        // typing inside a formatted range stretches it, deleting shrinks it
+        self.sync_tags_to_note();
         let content = self.content_text();
         if self.note().is_some_and(|n| n.content() == content) {
             return;
@@ -834,63 +833,24 @@ impl NoteBuffer {
         if text != "\n" {
             return;
         }
-        let mut start_iter = *loc;
-        start_iter.backward_char();
-        start_iter.set_line_offset(0);
+        let mut line_start = *loc;
+        line_start.backward_char();
+        let mut line_end = line_start;
+        line_start.set_line_offset(0);
 
-        let mut end_iter = start_iter;
-        end_iter.forward_chars(2);
-        let chars = buffer.text(&start_iter, &end_iter, false).to_string();
-
-        let is_simple = {
-            let mut c = chars.chars();
-            matches!(
-                (c.next(), c.next(), c.next()),
-                (Some('-' | '+' | '*' | '•' | '☐' | '☑'), Some(' '), None)
-            )
-        };
-
-        if is_simple {
-            // a ticked item carries on as a fresh, unticked one
-            let first = chars.chars().next().unwrap();
-            let bullet = if first == '☑' { '☐' } else { first };
-            let mut line_end = *loc;
-            line_end.backward_char();
-            if line_end.line_offset() == 2 {
-                start_iter.set_line_offset(0);
+        let line = buffer.text(&line_start, &line_end, false);
+        match continue_list(&line) {
+            ListAction::Insert(marker) => {
                 let mut at = *loc;
-                buffer.delete(&mut start_iter, &mut at);
-            } else {
-                let mut at = *loc;
-                buffer.insert(&mut at, &format!("{bullet} "));
+                buffer.insert(&mut at, &marker);
             }
-            return;
+            ListAction::Remove => {
+                let mut end = *loc;
+                buffer.delete(&mut line_start, &mut end);
+            }
+            ListAction::None => {}
         }
-
-        let limit = {
-            let mut l = start_iter;
-            l.forward_chars(10);
-            l
-        };
-        let mut search_end = start_iter;
-        search_end.forward_find_char(|c| c == ' ', Some(&limit));
-        search_end.forward_char();
-        let chars = buffer.text(&start_iter, &search_end, false).to_string();
-
-        let Some(digits) = chars.strip_suffix(". ").filter(|n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit())) else {
-            return;
-        };
-        let Ok(number) = digits.parse::<u64>() else { return };
-        let mut line_end = *loc;
-        line_end.backward_char();
-        if line_end.line_offset() as usize == number.to_string().len() + 2 {
-            start_iter.set_line_offset(0);
-            let mut at = *loc;
-            buffer.delete(&mut start_iter, &mut at);
-        } else {
-            let mut at = *loc;
-            buffer.insert(&mut at, &format!("{}. ", number + 1));
-        }
+        let _ = &mut line_end;
     }
 
     // ---- images ------------------------------------------------------------

@@ -5,7 +5,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{gio, glib};
-use sticky_core::{images as core_images, migration, store::Store, Note};
+use sticky_core::{exchange, images as core_images, migration, store::Store, Note};
 
 use crate::images::{data_dir, images_dir};
 use crate::note_object::NoteObject;
@@ -36,6 +36,8 @@ mod imp {
         pub open_new_note: Cell<bool>,
         pub show_all_notes: Cell<bool>,
         pub tray_sync: RefCell<Option<glib::SourceId>>,
+        pub dirty: RefCell<std::collections::HashSet<String>>,
+        pub save_source: RefCell<Option<glib::SourceId>>,
     }
 
     impl Default for Application {
@@ -50,6 +52,8 @@ mod imp {
                 open_new_note: Default::default(),
                 show_all_notes: Default::default(),
                 tray_sync: Default::default(),
+                dirty: Default::default(),
+                save_source: Default::default(),
             }
         }
     }
@@ -217,9 +221,16 @@ impl Application {
 
     // open and keep-above changes don't change modified, but must be saved too
     fn save_on_change(&self, note: &NoteObject) {
-        for prop in ["modified", "open", "keep-above", "x", "y"] {
+        for prop in ["open", "keep-above", "x", "y"] {
             note.connect_notify_local(Some(prop), |note, _| save_note(note));
         }
+        // typing changes `modified` on every key: write once the typing pauses
+        let app = self.downgrade();
+        note.connect_modified_notify(move |note| {
+            if let Some(app) = app.upgrade() {
+                app.save_later(&note.uuid());
+            }
+        });
         // the tray menu follows the titles and colours of the notes
         let app = self.downgrade();
         for prop in ["modified", "style", "display-title"] {
@@ -230,6 +241,25 @@ impl Application {
                 }
             });
         }
+    }
+
+    fn save_later(&self, uuid: &str) {
+        let imp = self.imp();
+        imp.dirty.borrow_mut().insert(uuid.to_string());
+        if imp.save_source.borrow().is_some() {
+            return;
+        }
+        let app = self.downgrade();
+        let id = glib::timeout_add_local_once(std::time::Duration::from_millis(500), move || {
+            let Some(app) = app.upgrade() else { return };
+            *app.imp().save_source.borrow_mut() = None;
+            let dirty: Vec<String> = app.imp().dirty.borrow_mut().drain().collect();
+            // a note deleted in the meantime is no longer found
+            for note in dirty.iter().filter_map(|uuid| app.find_note(uuid)) {
+                save_note(&note);
+            }
+        });
+        *imp.save_source.borrow_mut() = Some(id);
     }
 
     pub fn save(&self) {
@@ -540,19 +570,9 @@ impl Application {
 
             let result = (|| -> Result<(), String> {
                 let (contents, _) = file.load_contents(gio::Cancellable::NONE).map_err(|e| e.to_string())?;
-                let data: serde_json::Value = serde_json::from_slice(&contents).map_err(|e| e.to_string())?;
-                let notes = match data["notes"].as_array() {
-                    Some(n) if data["v"] == 1 => n,
-                    _ => return Ok(()),
-                };
-
-                for value in notes {
-                    let mut value = value.clone();
-                    let images: Vec<core_images::ExportedImage> =
-                        serde_json::from_value(value["images"].take()).unwrap_or_default();
-                    let Ok(mut note) = serde_json::from_value::<Note>(value) else { continue };
-                    // avoid duplicates by uuid; the uuid becomes a file name, so it is checked
-                    if !note.has_safe_uuid() || app.find_note(&note.uuid).is_some() {
+                for (mut note, images) in exchange::parse_import(&contents)? {
+                    // avoid duplicates by uuid
+                    if app.find_note(&note.uuid).is_some() {
                         continue;
                     }
                     note.images = core_images::import_images(&images_dir(), &images);
