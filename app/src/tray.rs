@@ -155,6 +155,8 @@ const OPEN_ID: i32 = 2;
 const NEW_NOTE_ID: i32 = 3;
 const NEW_NOTE_SEPARATOR_ID: i32 = 4;
 const FIRST_NOTE_ID: i32 = 5;
+// far above the ids notes get one after the other
+const QUIT_ID: i32 = i32::MAX - 1;
 
 pub struct TrayNote {
     pub uuid: String,
@@ -169,6 +171,7 @@ pub struct Callbacks {
     pub new_note: Box<dyn Fn()>,
     pub show_note: Box<dyn Fn(&str)>,
     pub open_app: Box<dyn Fn()>,
+    pub quit: Box<dyn Fn()>,
     pub registered_changed: Box<dyn Fn(bool)>,
 }
 
@@ -178,6 +181,7 @@ type Props = HashMap<String, Variant>;
 enum Action {
     None,
     NewNote,
+    Quit,
     ShowNote(String),
     OpenApp,
 }
@@ -294,6 +298,14 @@ fn build_items(
         ]),
         action: Action::OpenApp,
     });
+    items.push(MenuItem {
+        id: QUIT_ID,
+        properties: Props::from([
+            ("label".into(), sv(&escape_label(&gettext("Quit")))),
+            ("icon-name".into(), sv("application-exit-symbolic")),
+        ]),
+        action: Action::Quit,
+    });
     items
 }
 
@@ -348,7 +360,7 @@ fn layout_variant(items: &[MenuItem], parent_id: i32, recursion_depth: i32) -> V
     let children = if recursion_depth == 0 {
         vec![]
     } else {
-        items.iter().map(|i| item_variant(i.id, &i.properties, vec![]).to_variant()).collect()
+        items.iter().map(|i| item_variant(i.id, &i.properties, vec![])).collect()
     };
     item_variant(0, &root_properties(), children)
 }
@@ -622,6 +634,7 @@ impl Inner {
             Action::NewNote => (self.callbacks.new_note)(),
             Action::ShowNote(uuid) => (self.callbacks.show_note)(uuid),
             Action::OpenApp => (self.callbacks.open_app)(),
+            Action::Quit => (self.callbacks.quit)(),
         }
     }
 
@@ -777,7 +790,7 @@ mod tests {
     fn layout_and_fixed_ids() {
         let items = build(&mut NoteIds::new(), &[note("a", "A_1", 1), note("b", "  ", 2)]);
         let ids: Vec<i32> = items.iter().map(|i| i.id).collect();
-        assert_eq!(ids, vec![NEW_NOTE_ID, NEW_NOTE_SEPARATOR_ID, 5, 6, SEPARATOR_ID, OPEN_ID]);
+        assert_eq!(ids, vec![NEW_NOTE_ID, NEW_NOTE_SEPARATOR_ID, 5, 6, SEPARATOR_ID, OPEN_ID, QUIT_ID]);
         assert_eq!(items[2].properties["label"].str(), Some("A__1"));
         assert_eq!(items[3].properties["label"].str(), Some("(Empty Note)"));
         assert_eq!(items[5].action, Action::OpenApp);
@@ -822,6 +835,10 @@ mod tests {
         let full = layout_variant(&items, 0, -1);
         assert_eq!(full.type_().as_str(), "(ia{sv}av)");
         assert_eq!(full.child_value(2).n_children(), items.len());
+        // each child is boxed once in the `av`; boxing it twice makes the shell fail
+        let child = full.child_value(2).child_value(0);
+        assert_eq!(child.type_().as_str(), "v");
+        assert_eq!(child.as_variant().unwrap().type_().as_str(), "(ia{sv}av)");
         assert_eq!(layout_variant(&items, 0, 0).child_value(2).n_children(), 0);
         assert_eq!(layout_variant(&items, 99, 1).type_().as_str(), "(ia{sv}av)");
         assert_eq!(group_properties(&items, &[]).type_().as_str(), "(a(ia{sv}))");
@@ -905,6 +922,7 @@ mod tests {
                 new_note: Box::new(l2),
                 show_note: Box::new(move |u| log2.borrow_mut().push(format!("show {u}"))),
                 open_app: Box::new(l3),
+                quit: Box::new(|| {}),
                 registered_changed: Box::new(move |r| log3.borrow_mut().push(format!("registered {r}"))),
             },
         );
@@ -938,11 +956,11 @@ mod tests {
         assert_eq!(menu.child_value(0).as_variant().unwrap().str(), Some(MENU_OBJECT_PATH));
 
         // the first rebuild happens after the debounce
-        pump_until(&|| tray.inner.items.borrow().len() == 5);
+        pump_until(&|| tray.inner.items.borrow().len() == 6);
         let layout = call(MENU_OBJECT_PATH, MENU_INTERFACE, "GetLayout",
             Some((0i32, -1i32, Vec::<String>::new()).to_variant()));
         assert_eq!(layout.type_().as_str(), "(u(ia{sv}av))");
-        assert_eq!(layout.child_value(1).child_value(2).n_children(), 5);
+        assert_eq!(layout.child_value(1).child_value(2).n_children(), 6);
 
         // clicks reach the callbacks
         call(MENU_OBJECT_PATH, MENU_INTERFACE, "Event",

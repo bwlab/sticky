@@ -685,6 +685,7 @@ impl Application {
                 new_note: Box::new(with_app(|a| a.new_note())),
                 show_note: Box::new(show),
                 open_app: Box::new(with_app(|a| a.search_notes())),
+                quit: Box::new(with_app(|a| a.quit())),
                 registered_changed: Box::new(registered),
             },
         );
