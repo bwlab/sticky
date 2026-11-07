@@ -14,6 +14,7 @@ cargo = find_program('cargo')
 
 # A development build gets an id of its own, so it runs next to the stable one.
 development = get_option('profile') == 'development'
+app_id = development ? application_id + '.Devel' : application_id
 
 cargo_build = custom_target(
   'cargo-build',
@@ -29,7 +30,7 @@ cargo_build = custom_target(
     meson.project_build_root() / 'target',
     development ? 'debug' : 'release',
     '@OUTPUT@',
-    development ? application_id + '.Devel' : application_id,
+    app_id,
     get_option('prefix') / get_option('localedir'),
   ],
 )
